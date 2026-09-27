@@ -1,0 +1,90 @@
+[
+  {
+    "file": "160X600.png",
+    "width": 160,
+    "height": 600,
+    "frames": 1,
+    "durationsMs": [0],
+    "totalDurationMs": 0,
+    "loop": null,
+    "bytes": 80247,
+    "sha256": "de6b5c27cb22376c37fde5d36fadfebe6a431fc72dce5ffefdc974bddccbd220"
+  },
+  {
+    "file": "300X100.gif",
+    "width": 300,
+    "height": 100,
+    "frames": 2,
+    "durationsMs": [2000, 1800],
+    "totalDurationMs": 3800,
+    "loop": 0,
+    "bytes": 18457,
+    "sha256": "6d6a41ec8d5fc3bebe325d7a79cb678252efa092eb3cdb8f020902280358acc2"
+  },
+  {
+    "file": "300X50.png",
+    "width": 300,
+    "height": 50,
+    "frames": 1,
+    "durationsMs": [0],
+    "totalDurationMs": 0,
+    "loop": null,
+    "bytes": 22490,
+    "sha256": "3f4c82d8af4c9539c9a1a33b2d6758b585c9a1a75b707cbbd3eb670f8ccd898b"
+  },
+  {
+    "file": "300X600.png",
+    "width": 300,
+    "height": 600,
+    "frames": 1,
+    "durationsMs": [0],
+    "totalDurationMs": 0,
+    "loop": null,
+    "bytes": 173790,
+    "sha256": "4207bf5e5619308a1ce97adc3c6057cdbbd17bef0cb7186184e15ad8bf7afd79"
+  },
+  {
+    "file": "300x250.png",
+    "width": 300,
+    "height": 250,
+    "frames": 1,
+    "durationsMs": [0],
+    "totalDurationMs": 0,
+    "loop": null,
+    "bytes": 97319,
+    "sha256": "d719c1ae82eccbbb7e93dbec68788708f303dac36a5d71e311eb37b19a82547d"
+  },
+  {
+    "file": "320X50.gif",
+    "width": 320,
+    "height": 50,
+    "frames": 3,
+    "durationsMs": [2000, 2000, 1800],
+    "totalDurationMs": 5800,
+    "loop": 0,
+    "bytes": 15360,
+    "sha256": "17a0778136d74ea47a1f6961c3c06f5f1bb9cc917209aa69ddda2a6ab210c2ec"
+  },
+  {
+    "file": "320x480.png",
+    "width": 320,
+    "height": 480,
+    "frames": 1,
+    "durationsMs": [0],
+    "totalDurationMs": 0,
+    "loop": null,
+    "bytes": 135465,
+    "sha256": "0e9056b9e1ed0fdfa0dff3ff88e938e3cc961a23d112b9884cc016990977c4a3"
+  },
+  {
+    "file": "728X90.gif",
+    "width": 728,
+    "height": 90,
+    "frames": 2,
+    "durationsMs": [3000, 1800],
+    "totalDurationMs": 4800,
+    "loop": 0,
+    "bytes": 31409,
+    "sha256": "2611997db2cf8b24506d70d53d13de971fe382deafd6de738dfe288c75d94534"
+  }
+]
