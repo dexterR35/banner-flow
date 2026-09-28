@@ -13,6 +13,7 @@ import TextLayoutControls from './TextLayoutControls.jsx';
 import { focusImage } from '../../core/subject-position.js';
 import LayerAssetPreview from './LayerAssetPreview.jsx';
 import FadeMeshControls from './FadeMeshControls.jsx';
+import ImageShadowControls from './ImageShadowControls.jsx';
 
 export default function LayerInspector({
   blueprintMode = false,
@@ -49,6 +50,12 @@ export default function LayerInspector({
                   label="Campaign image source"
                 />
               )}
+              {!blueprintMode && campaign.imageFadeEnabled === false && (
+                <p className="panel-note">
+                  Image fades are off for {entry.marketId}. Your fade settings are kept. Turn “Fade:
+                  On” in Studio to preview them.
+                </p>
+              )}
               <FadeMeshControls
                 layer={selectedLayer}
                 onChange={change}
@@ -58,6 +65,7 @@ export default function LayerInspector({
                   setPlaying(false);
                 }}
               />
+              <ImageShadowControls layer={selectedLayer} onChange={change} />
               {!blueprintMode && (
                 <div className="segmented image-edit-mode" aria-label="Image editing mode">
                   <Button
@@ -196,6 +204,33 @@ export default function LayerInspector({
                 />
               </Field>
               <div className="glow-controls">
+                {selectedLayer.type === 'button' && (
+                  <>
+                    <Field label="Button text color">
+                      <Input
+                        type="color"
+                        value={selectedLayer.textFill || '#ffffff'}
+                        onChange={(e) => change({ textFill: e.target.value })}
+                      />
+                    </Field>
+                    <div className="field-grid">
+                      <NumberField
+                        label="Text padding horizontal"
+                        value={selectedLayer.textPaddingX ?? 6}
+                        min={0}
+                        max={500}
+                        onChange={(v) => change({ textPaddingX: Math.max(0, Math.min(500, v)) })}
+                      />
+                      <NumberField
+                        label="Text padding vertical"
+                        value={selectedLayer.textPaddingY ?? 2}
+                        min={0}
+                        max={500}
+                        onChange={(v) => change({ textPaddingY: Math.max(0, Math.min(500, v)) })}
+                      />
+                    </div>
+                  </>
+                )}
                 <label className="check glow-toggle">
                   <Input
                     type="checkbox"
@@ -317,7 +352,7 @@ export default function LayerInspector({
               )}
               {onLogoUpload && (
                 <AssetUpload
-                  label="NetBet logo"
+                  label={selectedLayer.name}
                   assetName={logoAssetName}
                   accept="image/png,image/jpeg,image/webp,image/svg+xml"
                   hint={`Logo image shared across ${entry.marketId} formats. SVG or transparent PNG recommended.`}

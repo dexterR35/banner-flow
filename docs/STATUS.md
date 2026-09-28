@@ -1,4 +1,4 @@
-# Implementation status · 27 September 2026
+# Implementation status · 28 September 2026
 
 Generated verification screenshots and test reports were removed at the user’s request. Historical verification paths below describe past checks; those artifacts are no longer retained. Future generated evidence is ignored by Git.
 
@@ -6,6 +6,8 @@ Generated verification screenshots and test reports were removed at the user’s
 **Stage: working local foundation, not a production-approved template library.** The original request to establish the reusable system, documentation and initial build is implemented. The full V1 handoff still has production completion work listed below.
 
 ## Working now
+
+- Joker5 market with 14 static blueprints, one per actual size, and 25 linked Chest/Mask references, including 350×100/350×250 despite the source filenames. Existing workspaces/imports gain missing entries without overwriting saved work. Each reference has measured logo, text, CTA and image boxes; automatic arrangement initially retains them. See [the complete reference audit and fidelity limits](JOKER5-REFERENCES.md).
 
 - Vite 8.3.1, React 19.3.0, JavaScript; pinned current packages and lockfile.
 - Reusable JSX interface library: buttons, inputs, labeled fields, cards/info cards, titles, feedback and dialogs. Feature components are grouped under campaign, assets, workspace, banner and editor; theme tokens are separate from layout styles.
@@ -31,11 +33,11 @@ Generated verification screenshots and test reports were removed at the user’s
 - Image upscaling, text overflow, legal visibility/size, missing references/logo/font, and canvas-bound review notes.
 - Lazy, local OpenCV.js source-image luminance and edge-variance analysis.
 - Project backup/import ZIP including original uploaded files, structural validation and content-hash verification.
-- Reference inventory, SHA-256 audit, GIF timing extraction, contact sheet, JSON Schema and 16 documented blueprint seed snapshots.
+- Reference inventory, SHA-256 audit, GIF timing extraction, contact sheet, JSON Schema and 30 documented blueprint seed snapshots.
 
 ## Evidence and limitations
 
-All supplied references are FI. UK templates are proposals, not reproductions. No original hero, standalone brand logo or production font is present. The demo photo crop and fallback text wordmark remain draft assets. The FI legal line is transcribed reference text; UK legal starts empty. Stored publication metadata does not imply legal/regulatory approval.
+Supplied references include NetBet FI and Joker5, both with Finnish copy. UK templates are proposals, not reproductions. No original hero, standalone brand logo or production font is present. The demo photo crop and fallback text wordmark remain draft assets. The FI legal line is transcribed reference text; UK legal starts empty. Stored publication metadata does not imply legal/regulatory approval.
 
 These templates reproduce broad layout rules, not exact reference pixels. Red text glow is now available as an editable effect. The rising-arrow offer asset and exact brand typography still need production assets. Reference image files are evidence; current rendered snapshots cannot be called approved golden masters.
 
@@ -149,3 +151,33 @@ GIF groups on the Studio canvas: animated banners now have an outline around the
 ### FI tall reference typography correction
 
 Compared the original FI 300×600 and 160×600 PNGs and separated the white title from the pale-blue supporting headline at the measured reference positions. Sampled supporting color: `#c5e6ff`. Supplied draft standards migrate once and sync to Studio, preserving campaign copy, local overrides, photos and previous revisions. Authored blueprint-editor standards remain untouched. These are text-block corrections, not pixel-perfect artwork reproduction: the original logo, arrow artwork and approved font are still separate asset concerns. Verified native-size rendering in an isolated browser, full core suite and production build; temporary visual evidence is outside the repository.
+
+### Joker5 reference layouts · 28 September 2026
+
+Added JOKER5 with 14 Chest and 11 Mask PNG references, audited original hashes and actual dimensions. Files named 300x100/300x250 in each set are 350x100/350x250 pixels; originals remain unchanged. Every source maps to a separate static blueprint/banner, with named variants and per-size role boxes. Missing CTA/spins follow the supplied layout. Auto arrange and Match blueprints default on for new Joker5 campaigns. Runtime demo crops keep the variants distinguishable; uploaded imagery/logo replace them through the shared renderer. Button label color and padding are editable and shared by fitting, quality review and exports. Legal footer clearance now checks horizontal overlap, retaining images beside the legal block.
+
+Existing workspace/import installation is additive and idempotent; saved campaign data, masters and overrides remain intact. The audit skips the old contact sheet and records forward-slash paths on Windows. The schema and all 41 documentation snapshots were refreshed. Source-versus-render inspection covers all 25 references. They remain draft approximations: standalone originals, transparent logos, patterned backgrounds and production font are absent; decorative crops and typography visibly differ. No reference-pixel approval or production approval is claimed.
+
+Verification: 50 core tests, 14 relevant browser workflows and production build passed. Browser checks include all 25 native output sizes, exact preview/PNG pixel equality, fixed boxes after long-copy arrangement, market isolation, existing-workspace installation, per-variant edits/reload, blueprint editing, legal footers, fonts/logo uploads and existing FI GIF output. Chrome was selected with PLAYWRIGHT_CHANNEL because the dedicated Playwright browser was not installed. Generated comparison sheets and Studio screenshots are ignored under docs/verification/joker5/. Tests used isolated browser storage.
+
+### One Joker5 banner per size and editable effects
+
+The user's clarification supersedes the earlier 25-banner implementation: Joker5 now has 14 active sizes. Chest and Mask remain alternative references, never duplicate outputs. Existing duplicates consolidate on load/import, preferring saved edits and retaining complete removed entries/banner histories in a validated backup archive. Add size checks dimensions rather than IDs, preventing duplicates even for legacy suffixed IDs. All 25 originals remain unchanged. The documentation generator now emits 30 current seeds across FI/UK/Joker5.
+
+Joker5 zero-fade seeds gain editable 16-point lateral/top fades through new immutable revisions; saved custom fades remain intact. Image-shadow controls are available for every market/size in the shared inspector, disabled by default, with color, opacity, blur and offsets. Blueprint saves propagate these effects only to the matching Studio banner. Same-size layouts in other markets remain independent. Original effect parameters cannot be recovered exactly from flattened reference PNGs; these treatments remain editable drafts pending visual approval.
+
+Verification of the correction: 52 core tests, 10 unique relevant browser workflows and production build passed. Migration checks cover 14 active artboards/ZIP outputs, 25 retained references, archived duplicate history through backup/import, and no regeneration of duplicate sizes. Image fade/shadow controls, blueprint-to-Studio synchronization, exact PNG pixels, GIF palette-tolerant output, existing mesh gestures and cross-market isolation were checked. The 14-artboard workspace, alternative reference links and side-fade/shadow inspector were visually inspected; evidence remains under ignored docs/verification/joker5/.
+
+### Per-market image fade switch
+
+Studio now has a “Fade: On / Off” button beside the canvas arrangement controls for every market, including custom markets. It saves `campaign.imageFadeEnabled` independently per market, defaults to enabled for existing projects, and bypasses linear and mesh image fades in the shared preview/editor/export renderer. Switching back on restores the saved effects; no blueprint revision, banner geometry, crop, local override or image shadow is changed. The image inspector explains when market fades are off.
+
+Verification: 52 core tests, eight relevant browser workflows and production build passed (existing bundle-size warning remains). Checks cover FI/UK/Joker5 persistence and isolation, unchanged design snapshots, restored preview pixels, exact PNG output, GIF palette tolerance, retained shadows and existing fade editing workflows. Desktop on/off screenshots were visually inspected; mobile controls passed visibility and overflow checks. These checks verify the toggle, not reference fidelity approval.
+
+### Joker5 GIF source refresh
+
+Re-audited the replaced source folders: 18 GIFs and four PNGs, covering 11 sizes with Chest/Mask alternatives. All 48 decoded frames were inspected. Nine current sizes now have editable animation sequences, preserving the audited 2000 ms frame delays, hard cuts, infinite loops, persistent layers and separate CTA/legal parts. Mask 300×50 and 320×100 have different frame counts/layouts from Chest and are catalogued separately as reference alternatives, not duplicate active sizes. The refreshed 300×100 and 300×250 files have true 300-pixel widths. New workspaces contain 11 current Joker5 entries; existing workspaces keep retired sizes/history and add missing sizes. Old supplied single-artwork standards migrate once through immutable revisions, preserving local exceptions and campaign fade settings. Authored standards/custom timelines are retained.
+
+GIF demo resources now use audited, content-hashed first-frame PNGs to prevent browser animation state from changing preview/export crops. Originals remain unchanged. Blueprint JSON contains editable geometry and tracks, with no flattened banner pixels. Current documentation seeds total 27; previous Joker5 sizes remain historical JSON snapshots. Full reference-pixel fidelity remains unapproved: production font, isolated artwork, transparent logo and patterned backgrounds are still absent.
+
+Verification: 54 core tests, 13 unique relevant browser workflows across the completed runs, and production build passed. All reference variants were decoded and compared scene by scene against exported GIFs for frame count, native dimensions, delays and palette-tolerant pixels. Checks also cover static PNG equality, layout locks, local timing edits/reload, legacy migration/reload idempotence, unchanged old revisions, market isolation, duplicate-size consolidation, fade/shadow controls and resource stability. Studio GIF groups and all reference/render comparison sheets were visually inspected under ignored docs/verification/joker5-gifs/. The existing bundle-size build warning remains. The local Vite preview is running on port 5178.

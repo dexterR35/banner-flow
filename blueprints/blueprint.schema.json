@@ -23,6 +23,11 @@
       "minimum": 32,
       "maximum": 2048
     },
+    "resourcePreset": {
+      "type": "string",
+      "maxLength": 100,
+      "pattern": "^[A-Za-z0-9-]+$"
+    },
     "height": {
       "type": "integer",
       "minimum": 32,
@@ -88,6 +93,15 @@
             "default": "",
             "type": "string"
           },
+          "sourcePart": {
+            "default": "all",
+            "type": "string",
+            "enum": [
+              "all",
+              "first-line",
+              "remaining-lines"
+            ]
+          },
           "x": {
             "type": "number"
           },
@@ -124,6 +138,23 @@
             "default": "#ffffff",
             "type": "string",
             "pattern": "^#[0-9a-f]{6}$"
+          },
+          "textFill": {
+            "default": "#ffffff",
+            "type": "string",
+            "pattern": "^#[0-9a-f]{6}$"
+          },
+          "textPaddingX": {
+            "default": 6,
+            "type": "number",
+            "minimum": 0,
+            "maximum": 500
+          },
+          "textPaddingY": {
+            "default": 2,
+            "type": "number",
+            "minimum": 0,
+            "maximum": 500
           },
           "fontSize": {
             "default": 24,
@@ -317,6 +348,53 @@
               "opacity"
             ],
             "additionalProperties": false
+          },
+          "shadow": {
+            "type": "object",
+            "properties": {
+              "enabled": {
+                "default": false,
+                "type": "boolean"
+              },
+              "color": {
+                "default": "#000000",
+                "type": "string",
+                "pattern": "^#[0-9a-f]{6}$"
+              },
+              "opacity": {
+                "default": 0.5,
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "blur": {
+                "default": 8,
+                "type": "number",
+                "minimum": 0,
+                "maximum": 40
+              },
+              "offsetX": {
+                "default": 0,
+                "type": "number",
+                "minimum": -100,
+                "maximum": 100
+              },
+              "offsetY": {
+                "default": 4,
+                "type": "number",
+                "minimum": -100,
+                "maximum": 100
+              }
+            },
+            "required": [
+              "enabled",
+              "color",
+              "opacity",
+              "blur",
+              "offsetX",
+              "offsetY"
+            ],
+            "additionalProperties": false
           }
         },
         "required": [
@@ -325,6 +403,7 @@
           "type",
           "source",
           "text",
+          "sourcePart",
           "x",
           "y",
           "width",
@@ -333,6 +412,9 @@
           "opacity",
           "visible",
           "fill",
+          "textFill",
+          "textPaddingX",
+          "textPaddingY",
           "fontSize",
           "minFontSize",
           "maxLines",

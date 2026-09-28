@@ -16,7 +16,7 @@
     "preview": "vite preview --host 0.0.0.0",
     "test": "node --test tests/*.test.js",
     "test:e2e": "playwright test",
-    "assets:audit": "python3 scripts/audit-assets.py",
+    "assets:audit": "node scripts/python.js scripts/audit-assets.py",
     "postinstall": "node scripts/prepare-opencv.js && node scripts/prepare-subject-runtime.js",
     "model:prepare": "node scripts/prepare-subject-runtime.js && node scripts/prepare-subject-model.js",
     "schema:document": "node scripts/document-schema.js",

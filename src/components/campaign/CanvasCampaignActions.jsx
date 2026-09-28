@@ -15,6 +15,17 @@ export default function CanvasCampaignActions() {
       <AutoPlaceSubject />
       <Button
         variant="secondary"
+        className="image-fade-action"
+        aria-label="Image fade"
+        aria-pressed={campaign.imageFadeEnabled !== false}
+        onClick={() => changeCampaign({ imageFadeEnabled: campaign.imageFadeEnabled === false })}
+        title={`Turn image fades ${campaign.imageFadeEnabled === false ? 'on' : 'off'} for all ${market.id} banners`}
+        disabled={disabled}
+      >
+        Fade: {campaign.imageFadeEnabled === false ? 'Off' : 'On'}
+      </Button>
+      <Button
+        variant="secondary"
         className="match-blueprints-action"
         aria-pressed={campaign.keepBlueprintBoxes === true}
         onClick={() =>

@@ -1,5 +1,18 @@
 import { canvasFont } from './typography.js';
 
+export function buttonTextBox(layer) {
+  const paddingX = Math.min(layer.textPaddingX ?? 6, (layer.width - 1) / 2);
+  const paddingY = Math.min(layer.textPaddingY ?? 2, (layer.height - 1) / 2);
+  return {
+    ...layer,
+    width: layer.width - paddingX * 2,
+    height: layer.height - paddingY * 2,
+    maxLines: 1,
+    paddingX,
+    paddingY,
+  };
+}
+
 function wrap(ctx, text, width, breakWords = false) {
   const lines = [];
   for (const paragraph of String(text).split('\n')) {

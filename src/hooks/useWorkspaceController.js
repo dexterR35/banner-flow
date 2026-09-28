@@ -1,9 +1,12 @@
 import { migrateFiReferences } from '../core/fi-reference-migration.js';
+import { migrateJoker5Effects } from '../core/joker5-effects.js';
+import { migrateJoker5References } from '../core/joker5-reference-migration.js';
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate, useSearchParams, useMatch } from 'react-router';
 import { useResources } from './useProject.js';
 import {
   activeRevision,
+  addReferenceMarkets,
   resolveBanner,
   createBlueprint,
   newEntry,
@@ -173,7 +176,12 @@ export function useWorkspaceController(project, setProject, saveStatus) {
     const bp = source
       ? duplicateForSize(activeRevision(source).blueprint, market.id, size.width, size.height)
       : createBlueprint(market.id, size.width, size.height);
-    if (entries.some((e) => e.id === bp.id)) {
+    if (
+      entries.some((e) => {
+        const existing = activeRevision(e).blueprint;
+        return existing.width === bp.width && existing.height === bp.height;
+      })
+    ) {
       notify('This market already has that size.');
       return;
     }
@@ -319,7 +327,15 @@ export function useWorkspaceController(project, setProject, saveStatus) {
     if (subject.placing) return;
     return run('Importing project…', async () => {
       const imported = await importProject(file);
-      setProject(migrateFiReferences(migrateLineSpacing(applyBlueprintCorrections(imported))));
+      setProject(
+        migrateFiReferences(
+          migrateLineSpacing(
+            migrateJoker5References(
+              migrateJoker5Effects(addReferenceMarkets(applyBlueprintCorrections(imported))),
+            ),
+          ),
+        ),
+      );
       setView('campaign', imported.markets[0].id);
       notify('Project imported.');
     });

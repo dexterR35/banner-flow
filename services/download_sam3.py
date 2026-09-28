@@ -7,7 +7,8 @@ from services.sam3_server import HF_REPO, HF_REVISION
 
 def main():
     if not get_token():
-        print("Sign in first with .venv-sam3/bin/hf auth login, then complete the browser authorization using the account with facebook/sam3 access.")
+        hf = r".venv-sam3\Scripts\hf" if os.name == "nt" else ".venv-sam3/bin/hf"
+        print(f"Sign in first with {hf} auth login, then complete the browser authorization using the account with facebook/sam3 access.")
         return 1
     try:
         HfApi().auth_check(repo_id=HF_REPO, repo_type="model")

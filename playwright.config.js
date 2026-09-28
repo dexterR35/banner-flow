@@ -8,6 +8,7 @@ export default defineConfig({
     baseURL: 'http://localhost:5178',
     viewport: { width: 1440, height: 1100 },
     headless: true,
+    ...(process.env.PLAYWRIGHT_CHANNEL ? { channel: process.env.PLAYWRIGHT_CHANNEL } : {}),
     trace: 'retain-on-failure',
   },
   webServer: { command: 'npm run dev', url: 'http://localhost:5178', reuseExistingServer: true },

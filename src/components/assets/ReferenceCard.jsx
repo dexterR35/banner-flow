@@ -7,7 +7,7 @@ export default function ReferenceCard({ asset }) {
       <CardBody>
         <img
           src={`/references/${asset.file}`}
-          alt={`Finnish reference ${asset.width} by ${asset.height}`}
+          alt={`${asset.file} reference ${asset.width} by ${asset.height}`}
           loading="lazy"
         />
       </CardBody>

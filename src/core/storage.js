@@ -3,6 +3,7 @@ import { validateBlueprint } from './schema.js';
 import { layoutKey } from './auto-layout.js';
 import { subjectSearchSchema, subjectFocusSchema } from './subject-data.js';
 import { loadOutfit } from './outfit-font.js';
+import { JOKER5_REFERENCES, LEGACY_JOKER5_REFERENCES } from '../data/joker5.js';
 const KEY = 'bannerflow-project-v1';
 export const loadProject = () => get(KEY);
 export const saveProject = (project) => set(KEY, project);
@@ -58,6 +59,36 @@ export function imageFrom(url) {
 }
 const images = new Map(),
   fonts = new Map();
+function referenceImage(file) {
+  const key = `reference:${file}`;
+  if (!images.has(key)) images.set(key, imageFrom(`/references/${file}`));
+  return images.get(key);
+}
+let referencePresets;
+async function loadReferencePresets() {
+  referencePresets ??= Promise.all(
+    [
+      ...JOKER5_REFERENCES,
+      ...LEGACY_JOKER5_REFERENCES.filter((old) => !JOKER5_REFERENCES.some((r) => r.id === old.id)),
+    ].map(async (legacy) => {
+      // Retired 350x250 demos use the replacement's native crop, never stale pixel bounds.
+      const reference =
+        legacy.width === 350 && legacy.height === 250
+          ? JOKER5_REFERENCES.find(
+              (r) => r.width === 300 && r.height === 250 && r.variant === legacy.variant,
+            )
+          : legacy;
+      const hero = await referenceImage(reference.stillFile || reference.file);
+      const [x, y, width, height] = reference.boxes.logo;
+      const logo = document.createElement('canvas');
+      logo.width = width;
+      logo.height = height;
+      logo.getContext('2d').drawImage(hero, x, y, width, height, 0, 0, width, height);
+      return [legacy.id, { hero, heroCrop: reference.boxes.hero, logo }];
+    }),
+  ).then(Object.fromEntries);
+  return referencePresets;
+}
 async function assetImage(id) {
   if (!images.has(id))
     images.set(
@@ -76,15 +107,18 @@ async function assetImage(id) {
   return images.get(id);
 }
 export async function loadResources(campaign) {
+  const presets = campaign.referencePack === 'joker5' ? await loadReferencePresets() : null;
+  const demo = presets ? Object.values(presets)[0] : null;
   const hero = campaign.heroAssetId
     ? await assetImage(campaign.heroAssetId)
-    : await (images.get('demo') ||
+    : demo?.hero ||
+      (await (images.get('demo') ||
         (() => {
           const promise = imageFrom('/references/300X600.png');
           images.set('demo', promise);
           return promise;
-        })());
-  const logo = campaign.logoAssetId ? await assetImage(campaign.logoAssetId) : null;
+        })()));
+  const logo = campaign.logoAssetId ? await assetImage(campaign.logoAssetId) : demo?.logo || null;
   let fontFamily = null;
   if (campaign.typography === 'outfit') {
     fontFamily = await loadOutfit();
@@ -101,7 +135,10 @@ export async function loadResources(campaign) {
   }
   return {
     hero,
-    heroCrop: campaign.heroAssetId ? null : [0, 340, 300, 210],
+    heroCrop: campaign.heroAssetId ? null : demo?.heroCrop || [0, 340, 300, 210],
+    ...(presets
+      ? { presets, uploadedHero: !!campaign.heroAssetId, uploadedLogo: !!campaign.logoAssetId }
+      : {}),
     logo,
     fontFamily,
     typography: campaign.typography || 'original',
@@ -233,8 +270,12 @@ export function validateProject(value) {
         throw new Error(`Missing ${kind} asset binding.`);
     if (c.autoArrange != null && typeof c.autoArrange !== 'boolean')
       throw new Error('Invalid automatic layout setting.');
+    if (c.imageFadeEnabled != null && typeof c.imageFadeEnabled !== 'boolean')
+      throw new Error('Invalid image fade setting.');
     if (c.typography != null && !['original', 'outfit'].includes(c.typography))
       throw new Error('Invalid campaign typography.');
+    if (c.referencePack != null && c.referencePack !== 'joker5')
+      throw new Error('Unknown reference resource pack.');
     c.autoArrange ??= true;
     if (c.keepBlueprintBoxes != null && typeof c.keepBlueprintBoxes !== 'boolean')
       throw new Error('Invalid blueprint box setting.');
@@ -253,6 +294,20 @@ export function validateProject(value) {
       throw new Error('Subject focus does not match the campaign image.');
   }
   // Older workspaces retain their saved appearance until the next content edit or manual arrange.
+  if (value.consolidatedReferences != null) {
+    if (!Array.isArray(value.consolidatedReferences) || value.consolidatedReferences.length > 2000)
+      throw new Error('Invalid consolidated reference archive.');
+    for (const archived of value.consolidatedReferences) {
+      if (!archived?.entry || !archived.banner || typeof archived.retainedEntryId !== 'string')
+        throw new Error('Invalid consolidated reference snapshot.');
+      validateProject({
+        ...value,
+        consolidatedReferences: undefined,
+        blueprints: [archived.entry],
+        banners: { [archived.entry.id]: archived.banner },
+      });
+    }
+  }
   for (const entry of value.blueprints)
     if (!('layoutKey' in value.banners[entry.id]))
       value.banners[entry.id].layoutKey = layoutKey(value.campaigns[entry.marketId]);

@@ -85,7 +85,7 @@ export default function CampaignPanel() {
         </div>
         <BannerTypography campaign={campaign} onChange={changeCampaign} />
         <AssetUpload
-          label="NetBet logo"
+          label={market.logoLabel || 'NetBet logo'}
           assetName={project.assets.find((asset) => asset.id === campaign.logoAssetId)?.name}
           accept="image/png,image/jpeg,image/webp,image/svg+xml"
           hint="Logo image for this market · SVG or transparent PNG recommended."
@@ -125,7 +125,7 @@ export default function CampaignPanel() {
         <Field
           label={`${market.id} legal line`}
           hint={
-            market.id === 'FI'
+            market.legalStatus === 'reference transcription'
               ? 'Transcribed from the reference. Needs review.'
               : 'Add approved copy for this market.'
           }

@@ -14,10 +14,11 @@ export default function AssetsPage() {
         title="Assets & references"
         description="Original files and reference evidence, kept together."
       />
-      <InfoCard icon={BookOpen} title="Eight Finnish references. A starting point.">
+      <InfoCard icon={BookOpen} title="NetBet FI and Joker5 references">
         <p>
-          UK references, standalone logo, production font, and original photo are still missing. The
-          starter photo is a low-resolution reference crop.
+          Joker5 includes Chest and Mask variants. Sizes use the actual image pixels, even when the
+          filename differs. UK references and separate production images, logos and fonts are still
+          missing. Starter artwork uses reference crops.
         </p>
       </InfoCard>
       <Title as="h2" className="section-heading">

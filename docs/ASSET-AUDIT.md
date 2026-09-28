@@ -1,6 +1,6 @@
-# Source asset audit · 27 September 2026
+# Source asset audit · 28 September 2026
 
-Eight references were found in `assets/`. Every visible headline, CTA and legal string is Finnish. **No UK reference, separate NetBet logo, production font or original campaign photo was supplied.** UK is a common-system draft and must not be described as reference-matched.
+The refreshed `assets/` inventory has 30 source references: eight NetBet FI files and 22 Joker5 files (18 GIFs and four PNGs, across 11 sizes in both Chest and Mask). The existing contact sheet is excluded. All Joker5 GIF frames last 2000 ms and loop indefinitely. The refreshed 300x100 and 300x250 files really are 300 pixels wide; they supersede the earlier mislabeled PNG references. **No UK reference, separate production logo, production font or original campaign image was supplied.** UK remains a common-system draft. [The Joker5 audit](JOKER5-REFERENCES.md) records each sequence and the remaining fidelity limits.
 
 The machine-readable inventory is `src/data/asset-manifest.json`. It records original SHA-256 hashes, byte counts, dimensions and frame delays. Source files are preserved. `public/references/` contains copies for the reference gallery. `docs/reference-contact-sheet.png` and `docs/reference-frames/` are inspection artifacts, not campaign source masters.
 

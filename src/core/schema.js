@@ -50,6 +50,12 @@ export const layerSchema = z
       .string()
       .regex(/^#[0-9a-f]{6}$/i)
       .default('#ffffff'),
+    textFill: z
+      .string()
+      .regex(/^#[0-9a-f]{6}$/i)
+      .default('#ffffff'),
+    textPaddingX: z.number().min(0).max(500).default(6),
+    textPaddingY: z.number().min(0).max(500).default(2),
     fontSize: z.number().positive().max(500).default(24),
     minFontSize: z.number().positive().default(10),
     maxLines: z.number().int().min(1).max(20).default(3),
@@ -69,6 +75,19 @@ export const layerSchema = z
     stacked: z.boolean().default(false),
     // Additive, opt-in effect: existing saved artwork keeps its original appearance.
     glow: glowSchema.prefault({}),
+    shadow: z
+      .object({
+        enabled: z.boolean().default(false),
+        color: z
+          .string()
+          .regex(/^#[0-9a-f]{6}$/i)
+          .default('#000000'),
+        opacity: z.number().min(0).max(1).default(0.5),
+        blur: z.number().min(0).max(40).default(8),
+        offsetX: z.number().min(-100).max(100).default(0),
+        offsetY: z.number().min(-100).max(100).default(4),
+      })
+      .optional(),
   })
   .refine((l) => l.minFontSize <= l.fontSize, {
     message: 'Minimum font size exceeds preferred size.',
@@ -90,6 +109,11 @@ export const blueprintSchema = z
     marketId: z.string().min(1),
     name: z.string().min(1),
     width: z.number().int().min(32).max(2048),
+    resourcePreset: z
+      .string()
+      .regex(/^[A-Za-z0-9-]+$/)
+      .max(100)
+      .optional(),
     height: z.number().int().min(32).max(2048),
     mode: z.enum(['static', 'animated']),
     repeat: z.number().int().min(0).max(100).default(0),

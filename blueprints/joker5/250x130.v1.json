@@ -1,0 +1,339 @@
+{
+  "schemaVersion": 1,
+  "id": "JOKER5-250x130",
+  "marketId": "JOKER5",
+  "name": "250x130",
+  "width": 250,
+  "resourcePreset": "JOKER5-250x130-chest",
+  "height": 130,
+  "mode": "static",
+  "repeat": 0,
+  "background": "#170e29",
+  "layers": [
+    {
+      "id": "hero",
+      "name": "hero",
+      "type": "image",
+      "source": "hero",
+      "text": "",
+      "sourcePart": "all",
+      "x": 179,
+      "y": 0,
+      "width": 71,
+      "height": 121,
+      "rotation": 0,
+      "opacity": 1,
+      "visible": true,
+      "fill": "#ffffff",
+      "textFill": "#ffffff",
+      "textPaddingX": 6,
+      "textPaddingY": 2,
+      "fontSize": 24,
+      "minFontSize": 4,
+      "maxLines": 2,
+      "align": "left",
+      "verticalAlign": "middle",
+      "textFlow": "auto",
+      "textOverride": null,
+      "fontWeight": "bold",
+      "lineHeight": 1,
+      "focalX": 0.5,
+      "focalY": 0.5,
+      "zoom": 1,
+      "fade": 0.24,
+      "fadeDirection": "left",
+      "fadeMesh": {
+        "enabled": true,
+        "softness": 0.24,
+        "points": [
+          {
+            "x": 0,
+            "y": 0.12
+          },
+          {
+            "x": 0.06666666666666667,
+            "y": 0.12
+          },
+          {
+            "x": 0.13333333333333333,
+            "y": 0.12
+          },
+          {
+            "x": 0.2,
+            "y": 0.12
+          },
+          {
+            "x": 0.26666666666666666,
+            "y": 0.12
+          },
+          {
+            "x": 0.3333333333333333,
+            "y": 0.12
+          },
+          {
+            "x": 0.4,
+            "y": 0.12
+          },
+          {
+            "x": 0.4666666666666667,
+            "y": 0.12
+          },
+          {
+            "x": 0.5333333333333333,
+            "y": 0.12
+          },
+          {
+            "x": 0.6,
+            "y": 0.12
+          },
+          {
+            "x": 0.6666666666666666,
+            "y": 0.12
+          },
+          {
+            "x": 0.7333333333333333,
+            "y": 0.12
+          },
+          {
+            "x": 0.8,
+            "y": 0.12
+          },
+          {
+            "x": 0.8666666666666667,
+            "y": 0.12
+          },
+          {
+            "x": 0.9333333333333333,
+            "y": 0.12
+          },
+          {
+            "x": 1,
+            "y": 0.12
+          }
+        ]
+      },
+      "radius": 0,
+      "stacked": false,
+      "glow": {
+        "enabled": false,
+        "color": "#ff162d",
+        "blur": 8,
+        "opacity": 0.85
+      }
+    },
+    {
+      "id": "logo",
+      "name": "Joker5 logo",
+      "type": "logo",
+      "source": "logo",
+      "text": "",
+      "sourcePart": "all",
+      "x": 58,
+      "y": 12,
+      "width": 70,
+      "height": 21,
+      "rotation": 0,
+      "opacity": 1,
+      "visible": true,
+      "fill": "#ffffff",
+      "textFill": "#ffffff",
+      "textPaddingX": 6,
+      "textPaddingY": 2,
+      "fontSize": 24,
+      "minFontSize": 4,
+      "maxLines": 2,
+      "align": "left",
+      "verticalAlign": "middle",
+      "textFlow": "auto",
+      "textOverride": null,
+      "fontWeight": "bold",
+      "lineHeight": 1,
+      "focalX": 0.5,
+      "focalY": 0.5,
+      "zoom": 1,
+      "fade": 0.35,
+      "fadeDirection": "top",
+      "radius": 0,
+      "stacked": false,
+      "glow": {
+        "enabled": false,
+        "color": "#ff162d",
+        "blur": 8,
+        "opacity": 0.85
+      }
+    },
+    {
+      "id": "headline",
+      "name": "headline",
+      "type": "text",
+      "source": "headline",
+      "text": "",
+      "sourcePart": "all",
+      "x": 12,
+      "y": 38.32,
+      "width": 164,
+      "height": 17.5,
+      "rotation": 0,
+      "opacity": 1,
+      "visible": true,
+      "fill": "#ffc447",
+      "textFill": "#ffffff",
+      "textPaddingX": 6,
+      "textPaddingY": 2,
+      "fontSize": 24,
+      "minFontSize": 4,
+      "maxLines": 1,
+      "align": "left",
+      "verticalAlign": "middle",
+      "textFlow": "single-line",
+      "textOverride": null,
+      "fontWeight": "bold",
+      "lineHeight": 1,
+      "focalX": 0.5,
+      "focalY": 0.5,
+      "zoom": 1,
+      "fade": 0.35,
+      "fadeDirection": "top",
+      "radius": 0,
+      "stacked": false,
+      "glow": {
+        "enabled": false,
+        "color": "#ff162d",
+        "blur": 8,
+        "opacity": 0.85
+      }
+    },
+    {
+      "id": "subtitle",
+      "name": "subtitle",
+      "type": "text",
+      "source": "subtitle",
+      "text": "",
+      "sourcePart": "all",
+      "x": 12,
+      "y": 57,
+      "width": 164,
+      "height": 11,
+      "rotation": 0,
+      "opacity": 1,
+      "visible": true,
+      "fill": "#9370e9",
+      "textFill": "#ffffff",
+      "textPaddingX": 6,
+      "textPaddingY": 2,
+      "fontSize": 24,
+      "minFontSize": 4,
+      "maxLines": 1,
+      "align": "left",
+      "verticalAlign": "middle",
+      "textFlow": "single-line",
+      "textOverride": null,
+      "fontWeight": "bold",
+      "lineHeight": 1,
+      "focalX": 0.5,
+      "focalY": 0.5,
+      "zoom": 1,
+      "fade": 0.35,
+      "fadeDirection": "top",
+      "radius": 0,
+      "stacked": false,
+      "glow": {
+        "enabled": false,
+        "color": "#ff162d",
+        "blur": 8,
+        "opacity": 0.85
+      }
+    },
+    {
+      "id": "cta",
+      "name": "cta",
+      "type": "button",
+      "source": "cta",
+      "text": "",
+      "sourcePart": "all",
+      "x": 55,
+      "y": 77,
+      "width": 74,
+      "height": 16,
+      "rotation": 0,
+      "opacity": 1,
+      "visible": true,
+      "fill": "#f6c84e",
+      "textFill": "#080607",
+      "textPaddingX": 12.58,
+      "textPaddingY": 4,
+      "fontSize": 24,
+      "minFontSize": 4,
+      "maxLines": 1,
+      "align": "center",
+      "verticalAlign": "middle",
+      "textFlow": "auto",
+      "textOverride": null,
+      "fontWeight": "bold",
+      "lineHeight": 1,
+      "focalX": 0.5,
+      "focalY": 0.5,
+      "zoom": 1,
+      "fade": 0.35,
+      "fadeDirection": "top",
+      "radius": 30,
+      "stacked": false,
+      "glow": {
+        "enabled": false,
+        "color": "#ff162d",
+        "blur": 8,
+        "opacity": 0.85
+      }
+    },
+    {
+      "id": "legal",
+      "name": "legal",
+      "type": "text",
+      "source": "legal",
+      "text": "",
+      "sourcePart": "all",
+      "x": 9,
+      "y": 106,
+      "width": 170,
+      "height": 20,
+      "rotation": 0,
+      "opacity": 1,
+      "visible": true,
+      "fill": "#e2dfeb",
+      "textFill": "#ffffff",
+      "textPaddingX": 6,
+      "textPaddingY": 2,
+      "fontSize": 24,
+      "minFontSize": 4,
+      "maxLines": 2,
+      "align": "center",
+      "verticalAlign": "middle",
+      "textFlow": "manual",
+      "textOverride": null,
+      "fontWeight": "normal",
+      "lineHeight": 1,
+      "focalX": 0.5,
+      "focalY": 0.5,
+      "zoom": 1,
+      "fade": 0.35,
+      "fadeDirection": "top",
+      "radius": 0,
+      "stacked": false,
+      "glow": {
+        "enabled": false,
+        "color": "#ff162d",
+        "blur": 8,
+        "opacity": 0.85
+      }
+    }
+  ],
+  "scenes": [
+    {
+      "id": "artwork",
+      "name": "Chest",
+      "durationMs": 3000,
+      "transitionMs": 0,
+      "tracks": {}
+    }
+  ]
+}

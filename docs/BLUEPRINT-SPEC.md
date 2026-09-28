@@ -142,3 +142,17 @@ Focus affects the campaign layout key and derived arrangements, never immutable 
 ### FI tall reference headline
 
 FI 300×600 and 160×600 seed standards separate the white title and pale-blue supporting headline (`#c5e6ff`, sampled from the supplied PNG). Both bind to campaign `headline`: `sourcePart: first-line` uses the first explicit line; `remaining-lines` uses every subsequent line. The default `all` preserves existing bindings. Each block fits its own box without truncation; local text overrides replace only the selected block. Campaign headlines without a line break leave the supporting block empty. Other FI sizes and UK retain their existing treatment.
+
+## Reference variants and button text
+
+The refreshed Joker5 catalog has 11 current size snapshots under `blueprints/joker5/` (nine animated, two static); five older size snapshots remain historical records. Entries retain a primary `reference` and an optional `references` array of alternative source files. Legacy duplicate entries and their complete banner snapshots are preserved in the validated `project.consolidatedReferences` archive, excluded from active editing and export. Optional blueprint `resourcePreset` is a bounded identifier for a bundled runtime resource set, not an asset URL or image bytes. Joker5 campaigns may store `referencePack: joker5`. GIF references supply audited scene delays and decoded first-frame crops; uploaded original images/logos take precedence. Unknown resource preset IDs resolve the normal campaign resources.
+
+Button layers support `textFill` (six-digit hex, default white), `textPaddingX` (default 6 px) and `textPaddingY` (default 2 px). Padding is 0–500 native pixels, bounded at render time to retain a positive text box. The same inner box is used by rendering and quality checks; duplicate-size scaling scales the two axes separately. These additive defaults preserve existing buttons. The inspector exposes label color and padding. Text still fits inside the resulting box, without truncation.
+
+Footer image clearance applies only when image and legal boxes overlap horizontally. A leaderboard image beside its legal region retains its full height.
+
+## Image shadow
+
+The optional campaign field `imageFadeEnabled` is a boolean, defaulting to enabled when absent. It gates all image-layer linear and mesh fades for that market in the shared renderer. It does not change stored fade parameters, blueprint revisions, local overrides, crop geometry, image shadows or layout keys. Backups retain this per-market setting.
+
+Optional image-layer `shadow` stores `{enabled, color, opacity, blur, offsetX, offsetY}`. Defaults are false, #000000, 0.5, 8, 0, 4; bounds are 0–1 opacity, 0–40 native-pixel blur, and -100–100 offsets. Missing shadow preserves previous pixels. The shared Canvas renderer casts the shadow from source alpha before applying the existing fade; there is no segmentation or separate source asset. Inspector changes, blueprint saves, overrides, backups, static and GIF exports preserve the same parameters. Duplication scales offsets per axis and blur with typography, bounded by the contract.

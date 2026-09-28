@@ -21,7 +21,7 @@ The original [project handoff](../PROJECT-HANDOFF.md) is preserved. The user's l
 
 1. Put new source references in `assets/` without changing earlier files.
 2. Run `npm run assets:audit` to record hashes, dimensions and GIF timing and copy references to the preview directory.
-3. Associate the reference with the appropriate market and size in `src/data/reference-map.json`.
+3. Associate the reference with the appropriate market and size in `src/data/reference-map.json`. Joker5 variants, native dimensions, role boxes and GIF sequences are catalogued together in `src/data/joker5.js`; see [the Joker5 audit](JOKER5-REFERENCES.md). The audit also extracts deterministic first-frame PNGs for demo crops, while retaining the original GIFs for comparison.
 4. View each market’s layout boxes in Blueprints. Use Open original to compare any linked source artwork. Add/duplicate a size to open its blueprint editor. Arrange reusable boxes, fades and timing, then save; Studio uses the layout with the market’s logo, font and hero assets.
 5. Review text fit, legal treatment, all scenes, output dimensions and file weight at native size.
 6. Choose **Save blueprint** to append a standard revision and update the matching Studio banner automatically. The changed standard properties apply while local copy, crop and unrelated customizations remain. **Edit blueprint fade** offers a quick fade-only dialog with up to 16 points. Studio saves remain local overrides; original references and previous revisions are preserved. Previously saved mesh revisions synchronize once when their market opens; no Reset banner is needed.

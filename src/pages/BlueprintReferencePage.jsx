@@ -27,7 +27,11 @@ export default function BlueprintReferencePage() {
       <PageHeader
         eyebrow="BLUEPRINT REFERENCE"
         title={`Blueprint reference ${entry.marketId} / ${bp.width} × ${bp.height}`}
-        description="The reusable layout standard for this market and size."
+        description={
+          entry.variantLabel
+            ? `${entry.variantLabel} · ${bp.name}`
+            : 'The reusable layout standard for this market and size.'
+        }
         actions={
           <>
             <Button
@@ -69,6 +73,15 @@ export default function BlueprintReferencePage() {
               Open original <ArrowUpRight size={14} />
             </a>
           )}
+          {(entry.references || [])
+            .filter((file) => file !== entry.reference)
+            .map((file) => (
+              <p key={file}>
+                <a className="subtle" href={`/references/${file}`} target="_blank" rel="noreferrer">
+                  Additional reference: {file} <ArrowUpRight size={14} />
+                </a>
+              </p>
+            ))}
         </Card>
         <div className="blueprint-reference-details">
           <Card>

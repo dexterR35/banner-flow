@@ -3,6 +3,7 @@ import { fitText } from './text-fit.js';
 import { suggestTextLayout, textObstacles } from './text-layout.js';
 import { focusBlueprint } from './subject-position.js';
 import { reserveLegalFooter } from './legal-footer.js';
+import { resourcesForBlueprint } from './blueprint-resources.js';
 
 /** Only content that changes composition invalidates a campaign's arranged snapshots. */
 export const layoutKey = (campaign) =>
@@ -14,6 +15,7 @@ export const layoutKey = (campaign) =>
     campaign.heroAssetId,
     campaign.logoAssetId,
     campaign.fontAssetId,
+    ...(campaign.referencePack ? [campaign.referencePack] : []),
     ...(campaign.typography === 'outfit' ? ['outfit-800-600-400'] : []),
     ...(campaign.subjectFocus ? [campaign.subjectFocus] : []),
     ...(campaign.keepBlueprintBoxes ? ['fixed-blueprint-boxes'] : []),
@@ -147,6 +149,7 @@ export function arrangeBanner(
   } = {},
 ) {
   bp = reserveLegalFooter(bp);
+  resources = resourcesForBlueprint(bp, resources);
   // Text fitting happens inside each saved box in the shared renderer. Subject focus
   // can still pan/zoom the photograph without moving its frame or the text layers.
   if (campaign.keepBlueprintBoxes) return focusBlueprint(bp, campaign, resources).blueprint;

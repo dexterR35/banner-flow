@@ -1,10 +1,11 @@
-import { fitText, textTop } from './text-fit.js';
+import { fitText, textTop, buttonTextBox } from './text-fit.js';
 import { layerAt, sceneAt } from './timeline.js';
 import { assessSubject } from './subject-position.js';
 import { imagePlacement } from './image-position.js';
 import { canvasFont } from './typography.js';
 import { reserveLegalFooter } from './legal-footer.js';
 import { drawImageFade } from './image-fade.js';
+import { resourcesForBlueprint } from './blueprint-resources.js';
 
 export const canvasOf = (w, h) => {
   const c = document.createElement('canvas');
@@ -103,8 +104,19 @@ export function drawLayer(ctx, layer, campaign, resources, bp) {
   if (layer.type === 'image') {
     if (resources.hero) {
       const crop = cropFor(resources.hero, layer, resources.heroCrop);
+      const shadow = layer.shadow;
+      if (shadow?.enabled) {
+        ctx.shadowColor = `${shadow.color}${Math.round(shadow.opacity * 255)
+          .toString(16)
+          .padStart(2, '0')}`;
+        ctx.shadowBlur = shadow.blur;
+        ctx.shadowOffsetX = shadow.offsetX;
+        ctx.shadowOffsetY = shadow.offsetY;
+      }
       ctx.drawImage(resources.hero, ...crop, 0, 0, w, h);
-      drawImageFade(ctx, layer, bp.background);
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = ctx.shadowOffsetX = ctx.shadowOffsetY = 0;
+      if (campaign.imageFadeEnabled !== false) drawImageFade(ctx, layer, bp.background);
     }
   } else if (layer.type === 'logo') {
     if (resources.logo) {
@@ -132,11 +144,12 @@ export function drawLayer(ctx, layer, campaign, resources, bp) {
     rounded(ctx, w, h, layer.radius);
     ctx.fillStyle = layer.fill;
     ctx.fill();
-    ctx.translate(6, 2);
+    const box = buttonTextBox(layer);
+    ctx.translate(box.paddingX, box.paddingY);
     drawTextEffect(
       ctx,
       boundText(layer, campaign),
-      { ...layer, width: w - 12, height: h - 4, fill: '#ffffff', maxLines: 1 },
+      { ...box, fill: layer.textFill || '#ffffff' },
       campaign,
       resources,
     );
@@ -155,6 +168,7 @@ function drawScene(ctx, bp, campaign, resources, scene, local, draw) {
   for (const layer of bp.layers) draw(ctx, layerAt(layer, scene, local), campaign, resources, bp);
 }
 export function renderFrame(canvas, bp, campaign, resources, timeMs = 0, draw = drawLayer) {
+  resources = resourcesForBlueprint(bp, resources);
   bp = reserveLegalFooter(bp);
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -183,6 +197,7 @@ export function renderFrame(canvas, bp, campaign, resources, timeMs = 0, draw = 
 }
 
 export function qualityReport(bp, campaign, resources, entry) {
+  resources = resourcesForBlueprint(bp, resources);
   const issues = [],
     ctx = canvasOf(1, 1).getContext('2d');
   const add = (code, message) => {
@@ -190,7 +205,9 @@ export function qualityReport(bp, campaign, resources, entry) {
   };
   if (!campaign.heroAssetId)
     add('demo-image', 'Demo photo is a low-resolution crop from a reference. Upload the original.');
-  if (!resources.logo) add('logo', 'NetBet logo is a text placeholder. Upload the approved logo.');
+  if (!resources.logo) add('logo', 'Logo is a text placeholder. Upload the approved logo.');
+  else if (resources.presets && !campaign.logoAssetId)
+    add('reference-logo', 'Logo is cropped from reference artwork. Upload the approved original.');
   if (!resources.fontFamily) add('font', 'Using Arial fallback. Supply the production font.');
   if (!campaign.legal.trim()) add('legal-missing', 'Market legal copy is missing.');
   if (!entry?.reference) add('reference', 'No reference is linked to this market and size.');
@@ -211,8 +228,7 @@ export function qualityReport(bp, campaign, resources, entry) {
         `${l.name}: check canvas bounds${l.rotation ? ' after rotation' : ''}.`,
       );
     if (l.type === 'text' || l.type === 'button') {
-      const box =
-        l.type === 'button' ? { ...l, width: l.width - 12, height: l.height - 4, maxLines: 1 } : l;
+      const box = l.type === 'button' ? buttonTextBox(l) : l;
       const fit = fitText(ctx, boundText(l, campaign), box, resources);
       if (fit.overflow)
         add(`overflow-${l.id}`, `${l.name}: text exceeds its box at minimum font size.`);

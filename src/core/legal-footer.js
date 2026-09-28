@@ -22,6 +22,8 @@ export function reserveLegalFooter(bp) {
       !stationary(layer) ||
       layer.y + layer.height <= bottom ||
       layer.y >= bottom ||
+      layer.x >= legal.x + legal.width ||
+      layer.x + layer.width <= legal.x ||
       !bp.scenes.some(
         (scene) =>
           scene.tracks[layer.id]?.visible !== false && scene.tracks[legal.id]?.visible !== false,

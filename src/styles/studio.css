@@ -41,6 +41,7 @@
   gap: 8px;
 }
 .canvas-campaign-actions .match-blueprints-action,
+.canvas-campaign-actions .image-fade-action,
 .canvas-campaign-actions .arrange-now-action {
   font-size: 11px;
   box-shadow: 0 4px 18px #0005;
@@ -566,6 +567,7 @@
 }
 
 .canvas-campaign-actions .match-blueprints-action[aria-pressed='true'],
+.canvas-campaign-actions .image-fade-action[aria-pressed='true'],
 .canvas-campaign-actions .arrange-now-action[aria-pressed='true'] {
   color: var(--accent);
   border-color: var(--accent);

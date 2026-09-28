@@ -4,7 +4,9 @@
     "width": 160,
     "height": 600,
     "frames": 1,
-    "durationsMs": [0],
+    "durationsMs": [
+      0
+    ],
     "totalDurationMs": 0,
     "loop": null,
     "bytes": 80247,
@@ -15,18 +17,37 @@
     "width": 300,
     "height": 100,
     "frames": 2,
-    "durationsMs": [2000, 1800],
+    "durationsMs": [
+      2000,
+      1800
+    ],
     "totalDurationMs": 3800,
     "loop": 0,
     "bytes": 18457,
-    "sha256": "6d6a41ec8d5fc3bebe325d7a79cb678252efa092eb3cdb8f020902280358acc2"
+    "sha256": "6d6a41ec8d5fc3bebe325d7a79cb678252efa092eb3cdb8f020902280358acc2",
+    "stillFile": "frames/6d6a41ec8d5fc3bebe325d7a79cb678252efa092eb3cdb8f020902280358acc2-0.png"
+  },
+  {
+    "file": "300x250.png",
+    "width": 300,
+    "height": 250,
+    "frames": 1,
+    "durationsMs": [
+      0
+    ],
+    "totalDurationMs": 0,
+    "loop": null,
+    "bytes": 97319,
+    "sha256": "d719c1ae82eccbbb7e93dbec68788708f303dac36a5d71e311eb37b19a82547d"
   },
   {
     "file": "300X50.png",
     "width": 300,
     "height": 50,
     "frames": 1,
-    "durationsMs": [0],
+    "durationsMs": [
+      0
+    ],
     "totalDurationMs": 0,
     "loop": null,
     "bytes": 22490,
@@ -37,54 +58,386 @@
     "width": 300,
     "height": 600,
     "frames": 1,
-    "durationsMs": [0],
+    "durationsMs": [
+      0
+    ],
     "totalDurationMs": 0,
     "loop": null,
     "bytes": 173790,
     "sha256": "4207bf5e5619308a1ce97adc3c6057cdbbd17bef0cb7186184e15ad8bf7afd79"
   },
   {
-    "file": "300x250.png",
-    "width": 300,
-    "height": 250,
-    "frames": 1,
-    "durationsMs": [0],
-    "totalDurationMs": 0,
-    "loop": null,
-    "bytes": 97319,
-    "sha256": "d719c1ae82eccbbb7e93dbec68788708f303dac36a5d71e311eb37b19a82547d"
-  },
-  {
-    "file": "320X50.gif",
-    "width": 320,
-    "height": 50,
-    "frames": 3,
-    "durationsMs": [2000, 2000, 1800],
-    "totalDurationMs": 5800,
-    "loop": 0,
-    "bytes": 15360,
-    "sha256": "17a0778136d74ea47a1f6961c3c06f5f1bb9cc917209aa69ddda2a6ab210c2ec"
-  },
-  {
     "file": "320x480.png",
     "width": 320,
     "height": 480,
     "frames": 1,
-    "durationsMs": [0],
+    "durationsMs": [
+      0
+    ],
     "totalDurationMs": 0,
     "loop": null,
     "bytes": 135465,
     "sha256": "0e9056b9e1ed0fdfa0dff3ff88e938e3cc961a23d112b9884cc016990977c4a3"
   },
   {
+    "file": "320X50.gif",
+    "width": 320,
+    "height": 50,
+    "frames": 3,
+    "durationsMs": [
+      2000,
+      2000,
+      1800
+    ],
+    "totalDurationMs": 5800,
+    "loop": 0,
+    "bytes": 15360,
+    "sha256": "17a0778136d74ea47a1f6961c3c06f5f1bb9cc917209aa69ddda2a6ab210c2ec",
+    "stillFile": "frames/17a0778136d74ea47a1f6961c3c06f5f1bb9cc917209aa69ddda2a6ab210c2ec-0.png"
+  },
+  {
     "file": "728X90.gif",
     "width": 728,
     "height": 90,
     "frames": 2,
-    "durationsMs": [3000, 1800],
+    "durationsMs": [
+      3000,
+      1800
+    ],
     "totalDurationMs": 4800,
     "loop": 0,
     "bytes": 31409,
-    "sha256": "2611997db2cf8b24506d70d53d13de971fe382deafd6de738dfe288c75d94534"
+    "sha256": "2611997db2cf8b24506d70d53d13de971fe382deafd6de738dfe288c75d94534",
+    "stillFile": "frames/2611997db2cf8b24506d70d53d13de971fe382deafd6de738dfe288c75d94534-0.png"
+  },
+  {
+    "file": "joker5 part1/160x120.gif",
+    "width": 160,
+    "height": 120,
+    "frames": 2,
+    "durationsMs": [
+      2000,
+      2000
+    ],
+    "totalDurationMs": 4000,
+    "loop": 0,
+    "bytes": 12115,
+    "sha256": "6d6e952299e391b323e647dbb39d5ac00fa8317dc989b884a31316f564236246",
+    "stillFile": "frames/6d6e952299e391b323e647dbb39d5ac00fa8317dc989b884a31316f564236246-0.png"
+  },
+  {
+    "file": "joker5 part1/170x100.gif",
+    "width": 170,
+    "height": 100,
+    "frames": 3,
+    "durationsMs": [
+      2000,
+      2000,
+      2000
+    ],
+    "totalDurationMs": 6000,
+    "loop": 0,
+    "bytes": 15016,
+    "sha256": "c0ae5da98efaae9a48c9a79970c4577b43fdbf0ac15ce9157fbcf15b0ead333f",
+    "stillFile": "frames/c0ae5da98efaae9a48c9a79970c4577b43fdbf0ac15ce9157fbcf15b0ead333f-0.png"
+  },
+  {
+    "file": "joker5 part1/180x150.png",
+    "width": 180,
+    "height": 150,
+    "frames": 1,
+    "durationsMs": [
+      0
+    ],
+    "totalDurationMs": 0,
+    "loop": null,
+    "bytes": 35739,
+    "sha256": "b9e939f220493b324ad76ce239ba67286aa42cbb57184aec2c22740c592ca7fb"
+  },
+  {
+    "file": "joker5 part1/240x100.gif",
+    "width": 240,
+    "height": 100,
+    "frames": 3,
+    "durationsMs": [
+      2000,
+      2000,
+      2000
+    ],
+    "totalDurationMs": 6000,
+    "loop": 0,
+    "bytes": 17295,
+    "sha256": "d90a1432df4630909e9e1eecd895cf8f10af78dbf85a701f5cc1210280ee96cd",
+    "stillFile": "frames/d90a1432df4630909e9e1eecd895cf8f10af78dbf85a701f5cc1210280ee96cd-0.png"
+  },
+  {
+    "file": "joker5 part1/300x100.gif",
+    "width": 300,
+    "height": 100,
+    "frames": 2,
+    "durationsMs": [
+      2000,
+      2000
+    ],
+    "totalDurationMs": 4000,
+    "loop": 0,
+    "bytes": 13695,
+    "sha256": "4afe11d38ef98af97c8fe90233340f3cda2ed5b7f7bc5a9cf4cd2db47dfc4678",
+    "stillFile": "frames/4afe11d38ef98af97c8fe90233340f3cda2ed5b7f7bc5a9cf4cd2db47dfc4678-0.png"
+  },
+  {
+    "file": "joker5 part1/300x250.png",
+    "width": 300,
+    "height": 250,
+    "frames": 1,
+    "durationsMs": [
+      0
+    ],
+    "totalDurationMs": 0,
+    "loop": null,
+    "bytes": 74571,
+    "sha256": "d0a1f644a565d2a07aa8bc85fec23d5b734866af2965c16ba83fd569d67059be"
+  },
+  {
+    "file": "joker5 part1/300x50.gif",
+    "width": 300,
+    "height": 50,
+    "frames": 2,
+    "durationsMs": [
+      2000,
+      2000
+    ],
+    "totalDurationMs": 4000,
+    "loop": 0,
+    "bytes": 10573,
+    "sha256": "39c0c2fa7d21b11217e9df6674bb11c1807871e3edeb7edfd9adac7077489415",
+    "stillFile": "frames/39c0c2fa7d21b11217e9df6674bb11c1807871e3edeb7edfd9adac7077489415-0.png"
+  },
+  {
+    "file": "joker5 part1/320x100.gif",
+    "width": 320,
+    "height": 100,
+    "frames": 2,
+    "durationsMs": [
+      2000,
+      2000
+    ],
+    "totalDurationMs": 4000,
+    "loop": 0,
+    "bytes": 16920,
+    "sha256": "efc6b3921c6d7590ecfc77407050199c2f342a10ef8b05a93efa7cce320e33ca",
+    "stillFile": "frames/efc6b3921c6d7590ecfc77407050199c2f342a10ef8b05a93efa7cce320e33ca-0.png"
+  },
+  {
+    "file": "joker5 part1/320x50.gif",
+    "width": 320,
+    "height": 50,
+    "frames": 3,
+    "durationsMs": [
+      2000,
+      2000,
+      2000
+    ],
+    "totalDurationMs": 6000,
+    "loop": 0,
+    "bytes": 11640,
+    "sha256": "b04271bc2b0451f44dac1f35048b4a60419b31bcf43b754b3d04e1005c815e1d",
+    "stillFile": "frames/b04271bc2b0451f44dac1f35048b4a60419b31bcf43b754b3d04e1005c815e1d-0.png"
+  },
+  {
+    "file": "joker5 part1/350x100.gif",
+    "width": 350,
+    "height": 100,
+    "frames": 2,
+    "durationsMs": [
+      2000,
+      2000
+    ],
+    "totalDurationMs": 4000,
+    "loop": 0,
+    "bytes": 15550,
+    "sha256": "4a9903c5d8bfb3f7566df0692ccd9dbd80e61301ff11ce6067d79c2d15898fb7",
+    "stillFile": "frames/4a9903c5d8bfb3f7566df0692ccd9dbd80e61301ff11ce6067d79c2d15898fb7-0.png"
+  },
+  {
+    "file": "joker5 part1/728x90.gif",
+    "width": 728,
+    "height": 90,
+    "frames": 2,
+    "durationsMs": [
+      2000,
+      2000
+    ],
+    "totalDurationMs": 4000,
+    "loop": 0,
+    "bytes": 37219,
+    "sha256": "3eae290e466c56e934c6f8422663900e22b087a2f377d442815dad7fef52ddea",
+    "stillFile": "frames/3eae290e466c56e934c6f8422663900e22b087a2f377d442815dad7fef52ddea-0.png"
+  },
+  {
+    "file": "joker5 part2/160x120.gif",
+    "width": 160,
+    "height": 120,
+    "frames": 2,
+    "durationsMs": [
+      2000,
+      2000
+    ],
+    "totalDurationMs": 4000,
+    "loop": 0,
+    "bytes": 13934,
+    "sha256": "13658731d4358632fef004d2107dd238a486c9eb3f42612fa6a0bb3049ca3f14",
+    "stillFile": "frames/13658731d4358632fef004d2107dd238a486c9eb3f42612fa6a0bb3049ca3f14-0.png"
+  },
+  {
+    "file": "joker5 part2/170x100.gif",
+    "width": 170,
+    "height": 100,
+    "frames": 3,
+    "durationsMs": [
+      2000,
+      2000,
+      2000
+    ],
+    "totalDurationMs": 6000,
+    "loop": 0,
+    "bytes": 15047,
+    "sha256": "de0f1747d0ce50e38be6386fb1ae8622030343deeae2937d97aa197531784e2f",
+    "stillFile": "frames/de0f1747d0ce50e38be6386fb1ae8622030343deeae2937d97aa197531784e2f-0.png"
+  },
+  {
+    "file": "joker5 part2/180x150.png",
+    "width": 180,
+    "height": 150,
+    "frames": 1,
+    "durationsMs": [
+      0
+    ],
+    "totalDurationMs": 0,
+    "loop": null,
+    "bytes": 38883,
+    "sha256": "2a7e246f5fa66eea4fd5f6fa7e6ee0ed4ad7c7b47605737278a4e711e6f1718c"
+  },
+  {
+    "file": "joker5 part2/240x100.gif",
+    "width": 240,
+    "height": 100,
+    "frames": 3,
+    "durationsMs": [
+      2000,
+      2000,
+      2000
+    ],
+    "totalDurationMs": 6000,
+    "loop": 0,
+    "bytes": 20258,
+    "sha256": "f3ba46931233478df3fb5d92ac59ca05e849b5344c777a68069eb2233ddb1e10",
+    "stillFile": "frames/f3ba46931233478df3fb5d92ac59ca05e849b5344c777a68069eb2233ddb1e10-0.png"
+  },
+  {
+    "file": "joker5 part2/300x100.gif",
+    "width": 300,
+    "height": 100,
+    "frames": 2,
+    "durationsMs": [
+      2000,
+      2000
+    ],
+    "totalDurationMs": 4000,
+    "loop": 0,
+    "bytes": 13850,
+    "sha256": "6f1fb4b9d9b94005039447c4a85e0fd1d67e8fbf8e060d330ef4766932f5efef",
+    "stillFile": "frames/6f1fb4b9d9b94005039447c4a85e0fd1d67e8fbf8e060d330ef4766932f5efef-0.png"
+  },
+  {
+    "file": "joker5 part2/300x250.png",
+    "width": 300,
+    "height": 250,
+    "frames": 1,
+    "durationsMs": [
+      0
+    ],
+    "totalDurationMs": 0,
+    "loop": null,
+    "bytes": 82232,
+    "sha256": "362442c3223152e7dd4918b7317e8b912f27a737763e170ef88b249b4fcf8503"
+  },
+  {
+    "file": "joker5 part2/300x50.gif",
+    "width": 300,
+    "height": 50,
+    "frames": 3,
+    "durationsMs": [
+      2000,
+      2000,
+      2000
+    ],
+    "totalDurationMs": 6000,
+    "loop": 0,
+    "bytes": 10044,
+    "sha256": "ae9760dcd2279085921ff1a8360ccb344e0ff03204e08aa7b7c0c47c3305268f",
+    "stillFile": "frames/ae9760dcd2279085921ff1a8360ccb344e0ff03204e08aa7b7c0c47c3305268f-0.png"
+  },
+  {
+    "file": "joker5 part2/320x100.gif",
+    "width": 320,
+    "height": 100,
+    "frames": 3,
+    "durationsMs": [
+      2000,
+      2000,
+      2000
+    ],
+    "totalDurationMs": 6000,
+    "loop": 0,
+    "bytes": 22168,
+    "sha256": "84bd733d0e426bf200fb7162c9d7b621bebbed86a333253aa77194b6b106fdc7",
+    "stillFile": "frames/84bd733d0e426bf200fb7162c9d7b621bebbed86a333253aa77194b6b106fdc7-0.png"
+  },
+  {
+    "file": "joker5 part2/320x50.gif",
+    "width": 320,
+    "height": 50,
+    "frames": 3,
+    "durationsMs": [
+      2000,
+      2000,
+      2000
+    ],
+    "totalDurationMs": 6000,
+    "loop": 0,
+    "bytes": 13162,
+    "sha256": "a343da30a072dd58a1547991919d9e229a51bf21b0da26b7c28118692564281d",
+    "stillFile": "frames/a343da30a072dd58a1547991919d9e229a51bf21b0da26b7c28118692564281d-0.png"
+  },
+  {
+    "file": "joker5 part2/350x100.gif",
+    "width": 350,
+    "height": 100,
+    "frames": 2,
+    "durationsMs": [
+      2000,
+      2000
+    ],
+    "totalDurationMs": 4000,
+    "loop": 0,
+    "bytes": 15557,
+    "sha256": "dad52e9e05299f73edcae1b08738a773a60b55d795a3c812ce838796c581baaa",
+    "stillFile": "frames/dad52e9e05299f73edcae1b08738a773a60b55d795a3c812ce838796c581baaa-0.png"
+  },
+  {
+    "file": "joker5 part2/728x90.gif",
+    "width": 728,
+    "height": 90,
+    "frames": 2,
+    "durationsMs": [
+      2000,
+      2000
+    ],
+    "totalDurationMs": 4000,
+    "loop": 0,
+    "bytes": 35990,
+    "sha256": "c9e9d4fb76de3e7c75f21cd759ab234cb6518d6e7bd14efcead9082c21b3fad5",
+    "stillFile": "frames/c9e9d4fb76de3e7c75f21cd759ab234cb6518d6e7bd14efcead9082c21b3fad5-0.png"
   }
 ]

@@ -39,6 +39,7 @@ export default function BannerCard({
           onClick={onSelect}
         >
           {bp.width} <span>×</span> {bp.height}
+          {entry.variantLabel ? ` · ${entry.variantLabel}` : ''}
         </Button>
         <div className="artboard-actions">
           <Button

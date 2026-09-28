@@ -52,7 +52,7 @@ test('fresh UK standard is centered, while referenced, published and moving layo
   const headline = fresh.layers.find((layer) => layer.id === 'headline');
   assert.equal(headline.x, 30);
   assert.equal(headline.align, 'center');
-  assert.strictEqual(applyBlueprintCorrections(initialProject()).blueprints.length, 16);
+  assert.strictEqual(applyBlueprintCorrections(initialProject()).blueprints.length, 27);
   for (const kind of ['reference', 'published', 'rotated', 'moving']) {
     const project = initialProject();
     const entry = project.blueprints.find((item) => item.id === 'UK-300x600');

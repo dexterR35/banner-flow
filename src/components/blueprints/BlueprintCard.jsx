@@ -15,7 +15,7 @@ export default function BlueprintCard({ entry, onView, onEdit, editDisabled = fa
           <strong>
             {bp.width} <span>×</span> {bp.height}
           </strong>
-          <small>Layout structure</small>
+          <small>{entry.variantLabel || 'Layout structure'}</small>
         </div>
         <span className="type-badge">
           <Layers size={12} /> Blueprint

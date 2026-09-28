@@ -17,7 +17,7 @@ test('nested outlet navigation preserves market, campaign and filter state, with
   await expect(
     page.getByRole('heading', { name: 'Assets & references', exact: true }),
   ).toBeVisible();
-  await expect(page.locator('.reference-card')).toHaveCount(8);
+  await expect(page.locator('.reference-card')).toHaveCount(30);
   await page.screenshot({ path: testInfo.outputPath('assets-page.png'), fullPage: true });
   await page.goBack();
   await expect(page.getByLabel('Headline', { exact: true })).toHaveValue('A ROUTED CAMPAIGN');

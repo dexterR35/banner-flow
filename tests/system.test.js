@@ -17,7 +17,7 @@ import { cropFor } from '../src/core/render.js';
 
 test('all market seeds and custom size boundaries satisfy the renderer contract', () => {
   const project = initialProject();
-  assert.equal(project.blueprints.length, 16);
+  assert.equal(project.blueprints.length, 27);
   for (const e of project.blueprints)
     assert.equal(validateBlueprint(activeRevision(e).blueprint).marketId, e.marketId);
   for (const [w, h] of [...PRESETS, [32, 32], [2048, 32], [32, 2048], [500, 333]])

@@ -1,6 +1,8 @@
 import { migrateFiReferences } from '../core/fi-reference-migration.js';
+import { migrateJoker5Effects } from '../core/joker5-effects.js';
+import { migrateJoker5References } from '../core/joker5-reference-migration.js';
 import { useState, useEffect, useRef } from 'react';
-import { initialProject } from '../data/defaults.js';
+import { initialProject, addReferenceMarkets } from '../data/defaults.js';
 import { migrateLineSpacing } from '../core/line-spacing.js';
 import { applyBlueprintCorrections } from '../core/blueprint-corrections.js';
 import { loadProject, saveProject, validateProject, loadResources } from '../core/storage.js';
@@ -16,7 +18,13 @@ export function useProject() {
         setProject(
           migrateFiReferences(
             migrateLineSpacing(
-              p ? applyBlueprintCorrections(validateProject(p)) : initialProject(),
+              p
+                ? migrateJoker5References(
+                    migrateJoker5Effects(
+                      addReferenceMarkets(applyBlueprintCorrections(validateProject(p))),
+                    ),
+                  )
+                : initialProject(),
             ),
           ),
         );
@@ -49,6 +57,7 @@ export function useResources(campaign) {
     campaign.logoAssetId,
     campaign.fontAssetId,
     campaign.typography,
+    campaign.referencePack,
   ]);
   const [state, setState] = useState({ resources: null, error: null, key });
   useEffect(() => {

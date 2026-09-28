@@ -12,6 +12,7 @@ import { resolveBanner, uid } from '../../data/defaults.js';
 import { qualityReport } from '../../core/render.js';
 import { totalDuration, sceneStart } from '../../core/timeline.js';
 import { reserveLegalFooter } from '../../core/legal-footer.js';
+import { resourcesForBlueprint } from '../../core/blueprint-resources.js';
 
 export default function Editor({
   entry,
@@ -41,6 +42,7 @@ export default function Editor({
     [error, setError] = useState(''),
     [json, setJson] = useState(null);
   const bp = reserveLegalFooter(rawBp);
+  resources = resourcesForBlueprint(bp, resources);
   const selectedLayer = bp.layers.find((l) => l.id === selected);
   const lastExternal = useRef(initial),
     currentDraft = useRef(bp);
