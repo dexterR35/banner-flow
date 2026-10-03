@@ -220,6 +220,7 @@ export default function Editor({
   );
   const timeline = bp.mode === 'animated' && (
     <Timeline
+      campaign={blueprintMode ? null : campaign}
       bp={bp}
       setBp={update}
       time={time}

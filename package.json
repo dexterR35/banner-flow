@@ -20,13 +20,20 @@
     "postinstall": "node scripts/prepare-opencv.js && node scripts/prepare-subject-runtime.js",
     "model:prepare": "node scripts/prepare-subject-runtime.js && node scripts/prepare-subject-model.js",
     "schema:document": "node scripts/document-schema.js",
-    "format": "prettier --write src scripts tests vite.config.js playwright.config.js"
+    "format": "prettier --write src scripts tests vite.config.js playwright.config.js",
+    "qwen:download": "node scripts/python.js -m services.vision.download_qwen",
+    "qwen:check": "node scripts/python.js -m services.vision.check_qwen",
+    "qwen:smoke": "node scripts/python.js -m services.vision.check_qwen --smoke",
+    "florence:download": "node scripts/python.js -m services.vision.download_florence",
+    "florence:check": "node scripts/python.js -m services.vision.check_florence",
+    "florence:smoke": "node scripts/python.js -m services.vision.check_florence --smoke"
   },
   "dependencies": {
     "@fontsource-variable/dm-sans": "5.3.0",
     "@fontsource-variable/outfit": "5.3.0",
     "@huggingface/transformers": "4.3.0",
     "@techstark/opencv-js": "5.0.0-release.1",
+    "@xyflow/react": "12.12.0",
     "fflate": "0.8.3",
     "gifenc": "1.0.3",
     "idb-keyval": "6.3.0",

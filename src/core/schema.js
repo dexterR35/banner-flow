@@ -33,10 +33,18 @@ export const layerSchema = z
   .object({
     id: z.string().min(1),
     name: z.string().min(1),
-    type: z.enum(['background', 'image', 'logo', 'text', 'button', 'shape']),
+    type: z.enum(['background', 'image', 'logo', 'text', 'button', 'shape', 'cutout']),
     source: z
       .enum(['hero', 'logo', 'headline', 'subtitle', 'cta', 'legal', 'custom'])
       .default('custom'),
+    linkedLayerId: z.string().optional(),
+    fitPolicy: z.literal('strict-v1').optional(),
+    imageFit: z.enum(['cover', 'contain']).optional(),
+    direction: z.enum(['ltr', 'rtl']).optional(),
+    locks: z
+      .array(z.enum(['position', 'size', 'font', 'crop', 'visibility', 'copy', 'variant']))
+      .max(7)
+      .optional(),
     text: z.string().default(''),
     sourcePart: z.enum(['all', 'first-line', 'remaining-lines']).default('all'),
     x: z.number().finite(),
@@ -77,6 +85,7 @@ export const layerSchema = z
     glow: glowSchema.prefault({}),
     shadow: z
       .object({
+        auto: z.boolean().optional(),
         enabled: z.boolean().default(false),
         color: z
           .string()
@@ -137,6 +146,14 @@ export const blueprintSchema = z
       ctx.addIssue({ code: 'custom', message: 'Layer IDs must be unique.' });
     if (new Set(bp.scenes.map((s) => s.id)).size !== bp.scenes.length)
       ctx.addIssue({ code: 'custom', message: 'Scene IDs must be unique.' });
+    for (let i = 0; i < bp.layers.length; i++) {
+      const layer = bp.layers[i];
+      if (
+        layer.type === 'cutout' &&
+        !bp.layers.slice(0, i).some((l) => l.id === layer.linkedLayerId && l.type === 'image')
+      )
+        ctx.addIssue({ code: 'custom', message: 'Cut-out must follow its linked image.' });
+    }
     // Static output uses the first frame. Retain all parts when GIF is switched off.
     if (bp.scenes.reduce((n, s) => n + s.durationMs, 0) > 60000)
       ctx.addIssue({ code: 'custom', message: 'Animation exceeds 60 seconds.' });

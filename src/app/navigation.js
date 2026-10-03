@@ -1,5 +1,12 @@
-import { LayoutGrid, Layers, Images } from 'lucide-react';
+import { LayoutGrid, Layers, Images, Sparkles } from 'lucide-react';
 export const workspaceNavigation = [
+  {
+    id: 'generate',
+    path: '/generate',
+    icon: Sparkles,
+    label: 'Create from image & copy',
+    short: 'Create',
+  },
   {
     id: 'campaign',
     path: '/campaign',

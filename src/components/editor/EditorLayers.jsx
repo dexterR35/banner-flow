@@ -1,3 +1,4 @@
+import { autoAnimate, needsAutoAnimation } from '../../core/auto-animation.js';
 import { Checkbox, Button, Field, Input, NumberField } from '../ui/index.js';
 import { Layers, Image as ImageIcon, Type, Square, Eye, EyeOff, Plus } from 'lucide-react';
 import BannerTypography from '../campaign/BannerTypography.jsx';
@@ -106,7 +107,11 @@ export default function EditorLayers({
         onChange={(event) => {
           setPlaying(false);
           setTime(0);
-          update({ ...bp, mode: event.target.checked ? 'animated' : 'static' });
+          update(
+            event.target.checked && needsAutoAnimation(bp)
+              ? autoAnimate(bp, blueprintMode ? null : campaign)
+              : { ...bp, mode: event.target.checked ? 'animated' : 'static' },
+          );
         }}
       />
       {bp.mode === 'animated' && (

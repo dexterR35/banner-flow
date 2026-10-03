@@ -28,9 +28,13 @@ self.onmessage = async ({ data }) => {
     // Explicit components avoid the pipeline factory's remote file-discovery step.
     const readConfig = async (file) => {
       const response = await fetch(`${env.localModelPath}${name}/${file}`);
-      if (!response.ok) throw new Error(`Local subject model is missing ${file}.`);
+      if (!response.ok || !response.headers.get('content-type')?.includes('json'))
+        throw new Error(
+          'Browser AI model is not installed. Run npm run model:prepare, use SAM 3, or choose manual focus.',
+        );
       return response.json();
     };
+    await readConfig('config.json');
     const [model, tokenizerJSON, tokenizerConfig, imageConfig] = await Promise.all([
       AutoModelForZeroShotObjectDetection.from_pretrained(name, {
         ...options,

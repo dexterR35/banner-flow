@@ -1,3 +1,4 @@
+import { measureStrictText } from './generation/strict-text.js';
 import { canvasFont } from './typography.js';
 
 export function buttonTextBox(layer) {
@@ -83,6 +84,7 @@ function balancedRows(ctx, text, width, rows) {
 }
 /** Fill the existing box; saved minimum sizes and row counts are preferences, never truncation limits. */
 export function fitText(ctx, text, layer, font = 'Arial', { grow = true } = {}) {
+  if (layer.fitPolicy === 'strict-v1') return measureStrictText(ctx, text, layer, font);
   const flow = layer.textFlow || 'manual';
   const content = flow === 'manual' ? String(text) : flatten(text);
   const minimum = layer.minFontSize;

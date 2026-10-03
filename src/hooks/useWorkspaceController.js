@@ -1,3 +1,4 @@
+import { useImageTools } from './useImageTools.js';
 import { migrateFiReferences } from '../core/fi-reference-migration.js';
 import { migrateJoker5Effects } from '../core/joker5-effects.js';
 import { migrateJoker5References } from '../core/joker5-reference-migration.js';
@@ -15,7 +16,7 @@ import {
   uid,
   duplicateForSize,
 } from '../data/defaults.js';
-import { storeAsset } from '../core/storage.js';
+import { storeAsset, getAsset, imageFrom } from '../core/storage.js';
 import {
   exportSet,
   download,
@@ -25,6 +26,8 @@ import {
   safeName,
 } from '../core/export.js';
 import { qualityReport } from '../core/render.js';
+import { blueprintFromFlorence, florenceReferenceSchema } from '../core/florence-reference.js';
+import { imagePayload, requestVision, visionCapabilities } from '../core/generation/planner.js';
 import { analyzeImage } from '../core/image-analysis.js';
 import { layoutKey } from '../core/auto-layout.js';
 import { useAutoArrange, arrangeMarket } from './useAutoArrange.js';
@@ -49,7 +52,8 @@ export function useWorkspaceController(project, setProject, saveStatus) {
     [size, setSize] = useState({ width: 970, height: 250 }),
     [newMarket, setNewMarket] = useState({ id: '', name: '', locale: 'en-GB', legal: '' }),
     [analysis, setAnalysis] = useState(null),
-    [review, setReview] = useState(null);
+    [review, setReview] = useState(null),
+    [blueprintProposal, setBlueprintProposal] = useState(null);
   const blueprintRoute = useMatch('/blueprints/:entryId/*');
   const editorRoute = useMatch('/campaign/:entryId/edit');
   const referenceEntry = project.blueprints.find(
@@ -67,6 +71,14 @@ export function useWorkspaceController(project, setProject, saveStatus) {
     view = location.pathname.split('/')[1] || 'campaign';
   const { resources, error } = useResources(campaign);
   const subject = useSubjectFocus(campaign, market.id, setProject, resources);
+  const tools = useImageTools({
+    project,
+    setProject,
+    campaign,
+    marketId: market.id,
+    resources,
+    placing: subject.placing,
+  });
   useEffect(() => {
     if (!subject.placing)
       setProject((current) =>
@@ -206,6 +218,78 @@ export function useWorkspaceController(project, setProject, saveStatus) {
       `/blueprints/${encodeURIComponent(entry.id)}/edit?market=${encodeURIComponent(market.id)}`,
     );
     notify('Blueprint created. Arrange the boxes, then save to update Studio.');
+  }
+  async function importReference(file) {
+    if (!file || subject.placing) return;
+    await run('Florence-2 is reading the reference…', async () => {
+      const capabilities = await visionCapabilities();
+      if (!capabilities.florence?.ready)
+        throw new Error(
+          capabilities.florence?.message ||
+            'Florence-2 is required for Blueprint reference import.',
+        );
+      const url = URL.createObjectURL(file);
+      let width, height;
+      try {
+        const image = await imageFrom(url);
+        if (image.width < 32 || image.height < 32 || image.width > 2048 || image.height > 2048)
+          throw new Error('Reference dimensions must be 32–2048 pixels.');
+        width = image.width;
+        height = image.height;
+      } finally {
+        URL.revokeObjectURL(url);
+      }
+      const evidence = florenceReferenceSchema.parse(
+        await requestVision('reference', {
+          image: await imagePayload(file, 1024),
+          profileId: capabilities.florence.profileId,
+        }),
+      );
+      if (evidence.profileId !== capabilities.florence.profileId)
+        throw new Error('PROFILE_MISMATCH: Florence changed during reference analysis.');
+      const bp = blueprintFromFlorence(evidence, { marketId: market.id, width, height });
+      const asset = await storeAsset(file, 'hero');
+      const existing = entries.find((e) => {
+        const b = activeRevision(e).blueprint;
+        return b.width === bp.width && b.height === bp.height;
+      });
+      if (existing) {
+        bp.id = existing.id;
+        setBlueprintProposal({ id: existing.id, blueprint: bp });
+      } else {
+        const entry = newEntry(bp);
+        setProject((p) => ({
+          ...p,
+          assets: p.assets.some((a) => a.id === asset.id)
+            ? p.assets
+            : [...p.assets, { ...asset, provenance: 'flattened-reference' }],
+          blueprints: [...p.blueprints, entry],
+          banners: {
+            ...p.banners,
+            [entry.id]: {
+              blueprintVersionId: entry.activeVersionId,
+              override: null,
+              history: [],
+              layoutKey: layoutKey(p.campaigns[market.id]),
+            },
+          },
+        }));
+      }
+      if (existing)
+        setProject((p) => ({
+          ...p,
+          assets: p.assets.some((a) => a.id === asset.id)
+            ? p.assets
+            : [...p.assets, { ...asset, provenance: 'flattened-reference' }],
+        }));
+      setDialog(null);
+      openBlueprintEditor(existing?.id || bp.id);
+      notify(
+        existing
+          ? `Florence found ${evidence.textRegions.length} text regions. Proposal opened as unsaved changes; assign roles and review boxes.`
+          : `Florence found ${evidence.textRegions.length} text regions. Draft blueprint created; assign roles and review boxes.`,
+      );
+    });
   }
   function addMarket() {
     if (subject.placing) return;
@@ -355,6 +439,7 @@ export function useWorkspaceController(project, setProject, saveStatus) {
     });
   return {
     project,
+    setProject,
     saveStatus,
     market,
     campaign,
@@ -392,6 +477,20 @@ export function useWorkspaceController(project, setProject, saveStatus) {
     openBlueprint,
     openBlueprintEditor,
     changeCampaign,
+    tools,
+    importReference,
+    blueprintProposal,
+    setBlueprintProposal,
+    setTreatment: (patch) => {
+      if (subject.placing) return;
+      setProject((p) => {
+        const next = {
+          ...p,
+          campaigns: { ...p.campaigns, [market.id]: { ...p.campaigns[market.id], ...patch } },
+        };
+        return resources ? arrangeMarket(next, market.id, resources) : next;
+      });
+    },
     upload,
     addSize,
     addMarket,

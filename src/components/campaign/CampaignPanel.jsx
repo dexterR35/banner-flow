@@ -1,3 +1,5 @@
+import AutomationPanel from './AutomationPanel.jsx';
+import { OUTPUT_LIMIT_PRESETS } from '../../data/output-limits.js';
 import {
   TextField,
   TextareaField,
@@ -157,7 +159,39 @@ export default function CampaignPanel() {
             </p>
           )}
         </details>
+        <AutomationPanel />
         <div className="export-panel">
+          <SelectField
+            label="File size limit"
+            value={campaign.outputLimit?.preset || 'none'}
+            onChange={(e) => {
+              const p = OUTPUT_LIMIT_PRESETS.find((p) => p.id === e.target.value);
+              changeCampaign({ outputLimit: { preset: p.id, maxKB: p.maxKB } });
+            }}
+          >
+            {OUTPUT_LIMIT_PRESETS.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          </SelectField>
+          {campaign.outputLimit?.preset === 'custom' && (
+            <TextField
+              label="KB"
+              type="number"
+              min="10"
+              max="5000"
+              value={campaign.outputLimit.maxKB}
+              onChange={(e) =>
+                changeCampaign({
+                  outputLimit: {
+                    preset: 'custom',
+                    maxKB: Math.max(10, Math.min(5000, +e.target.value)),
+                  },
+                })
+              }
+            />
+          )}
           <div className="row">
             <SelectField
               label="Static format"

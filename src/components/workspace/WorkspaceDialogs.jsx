@@ -17,6 +17,7 @@ export default function WorkspaceDialogs() {
     newMarket,
     setNewMarket,
     addSize,
+    importReference,
     addMarket,
     entries,
     format,
@@ -36,6 +37,20 @@ export default function WorkspaceDialogs() {
           <p className="muted">
             Create a blueprint for {market.name}, then arrange its boxes and fade in the editor.
           </p>
+          <Field
+            label="Upload a finished banner for Florence-2"
+            hint="Florence-2 is required. It proposes detected text boxes only; assign campaign roles and review the draft before saving. No alternate analyzer runs."
+          >
+            <Input
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              disabled={!!busy}
+              onChange={(e) => {
+                importReference(e.target.files[0]);
+                e.target.value = '';
+              }}
+            />
+          </Field>
           <Field label="Starting layout">
             <Select value={cloneFrom} onChange={(e) => setCloneFrom(e.target.value)}>
               <option value="common">Common standard</option>

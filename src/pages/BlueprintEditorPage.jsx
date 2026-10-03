@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { useWorkspace } from '../hooks/useWorkspace.js';
 import { Button, LoadingState } from '../components/ui/index.js';
@@ -11,7 +11,15 @@ const schematicResources = {};
 
 export default function BlueprintEditorPage() {
   const { entryId } = useParams();
-  const { project, subject, openBlueprint, saveBlueprint } = useWorkspace();
+  const {
+    project,
+    subject,
+    openBlueprint,
+    saveBlueprint,
+    blueprintProposal,
+    setBlueprintProposal,
+  } = useWorkspace();
+  useEffect(() => () => setBlueprintProposal(null), [entryId, setBlueprintProposal]);
   const entry = project.blueprints.find((item) => item.id === entryId);
   if (!entry) return <NotFoundPage editor />;
   if (subject.placing)
@@ -26,6 +34,9 @@ export default function BlueprintEditorPage() {
       <Editor
         key={entry.id}
         blueprintMode
+        banner={
+          blueprintProposal?.id === entry.id ? { override: blueprintProposal.blueprint } : undefined
+        }
         entry={entry}
         campaign={schematicCampaign}
         resources={schematicResources}

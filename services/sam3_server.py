@@ -181,6 +181,9 @@ class Sam3Engine:
             self.state = "ready" if self.processor else "available"
             self.lock.release()
 
+    def segment(self, image, label):
+        raise HTTPException(501, "This SAM backend does not expose the bounded mask contract.")
+
 
 class TransformersSam3Engine(Sam3Engine):
     """Hugging Face image/text SAM 3; supports CPU without importing the Meta checkout."""
@@ -220,6 +223,41 @@ class TransformersSam3Engine(Sam3Engine):
         processor = Sam3Processor.from_pretrained(str(self.model_path), **options)
         self.model, self.processor = model, processor
 
+    def segment(self, image, label):
+        if not self.lock.acquire(blocking=False):
+            raise HTTPException(429, "SAM 3 is already processing another image.")
+        try:
+            if not self.health()["ready"]:
+                raise HTTPException(503, "SAM 3 model is unavailable.")
+            import torch
+            import numpy as np
+            if self.processor is None:
+                self.load_model()
+            original_size = image.size
+            proxy = image.copy()
+            proxy.thumbnail((1024, 1024))
+            self.state = "busy"
+            with torch.inference_mode():
+                inputs = self.processor(images=proxy, text=label or "person", return_tensors="pt").to(self.model.device)
+                output = self.model(**inputs)
+                result = self.processor.post_process_instance_segmentation(output, threshold=0.5, mask_threshold=0.5, target_sizes=[(proxy.height,proxy.width)])[0]
+            selected = result["scores"].argsort(descending=True)[:8].tolist()
+            instances = []
+            for index in selected:
+                mask = result["masks"][index].detach().cpu().numpy().astype("uint8")
+                mask = np.asarray(Image.fromarray(mask).resize(original_size, Image.Resampling.NEAREST))
+                box = result["boxes"][index].detach().cpu().tolist()
+                box = [box[0]*image.width/proxy.width,box[1]*image.height/proxy.height,box[2]*image.width/proxy.width,box[3]*image.height/proxy.height]
+                instances.append((mask,box,float(result["scores"][index])))
+            return instances
+        except HTTPException:
+            raise
+        except Exception as error:
+            raise HTTPException(503, "SAM mask inference failed; use manual focus or the box fallback.") from error
+        finally:
+            self.state = "ready" if self.processor else "available"
+            self.lock.release()
+
     def infer(self, image, labels):
         inputs = self.processor(images=image, return_tensors="pt").to(self.model.device)
         vision = self.model.get_vision_features(pixel_values=inputs.pixel_values)
@@ -235,12 +273,19 @@ class TransformersSam3Engine(Sam3Engine):
         return detections
 
 
-def create_app(engine=None):
+def create_app(engine=None, tools=None, vision=None):
     if engine is None:
         backend = os.environ.get("BANNERFLOW_SAM3_BACKEND", "transformers")
         if backend not in {"native", "transformers"}:
             raise ValueError("BANNERFLOW_SAM3_BACKEND must be native or transformers.")
         engine = Sam3Engine() if backend == "native" else TransformersSam3Engine()
+    from services.vision.scheduler import ModelScheduler
+    scheduler = ModelScheduler()
+    def release_sam():
+        if hasattr(engine, 'model'): engine.model = None
+        if hasattr(engine, 'processor'): engine.processor = None
+        if hasattr(engine, 'state'): engine.state = 'available'
+    scheduler.register('sam', release_sam)
     app = FastAPI(title="Bannerflow local SAM 3", docs_url=None, redoc_url=None, openapi_url=None)
 
     @app.middleware("http")
@@ -279,9 +324,13 @@ def create_app(engine=None):
             raise HTTPException(422, "Image could not be decoded or exceeds 40 megapixels.") from error
         if await request.is_disconnected():
             raise HTTPException(499, "Search cancelled.")
-        detections = await asyncio.to_thread(engine.detect, image, labels)
+        detections = await asyncio.to_thread(scheduler.run, 'sam', engine.detect, image, labels)
         return {"service": SERVICE, "schemaVersion": 1, "engine": "sam3", "detections": detections}
 
+    from services.tool_routes import install_tool_routes
+    from services.vision.routes import install_vision_routes
+    install_tool_routes(app, engine, tools, scheduler)
+    install_vision_routes(app, vision, scheduler)
     return app
 
 

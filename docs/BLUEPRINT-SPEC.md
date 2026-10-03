@@ -156,3 +156,15 @@ Footer image clearance applies only when image and legal boxes overlap horizonta
 The optional campaign field `imageFadeEnabled` is a boolean, defaulting to enabled when absent. It gates all image-layer linear and mesh fades for that market in the shared renderer. It does not change stored fade parameters, blueprint revisions, local overrides, crop geometry, image shadows or layout keys. Backups retain this per-market setting.
 
 Optional image-layer `shadow` stores `{enabled, color, opacity, blur, offsetX, offsetY}`. Defaults are false, #000000, 0.5, 8, 0, 4; bounds are 0–1 opacity, 0–40 native-pixel blur, and -100–100 offsets. Missing shadow preserves previous pixels. The shared Canvas renderer casts the shadow from source alpha before applying the existing fade; there is no segmentation or separate source asset. Inspector changes, blueprint saves, overrides, backups, static and GIF exports preserve the same parameters. Duplication scales offsets per axis and blur with typography, bounded by the contract.
+
+## Optional strict generation extension · version 1
+
+Text/button layers may opt into `fitPolicy: "strict-v1"`. `fontSize` then becomes the upper bound, `minFontSize` and `maxLines` become hard limits, and explicit newlines/nonbreaking compounds are preserved. Overflow returns a review blocker instead of falling back below minimum. The shared fitter/renderer handles this in preview and export; legacy missing-field behavior is unchanged. Optional `direction` is `ltr`/`rtl`, but production RTL/glyph coverage is not certified by the current solver.
+
+Optional `locks` contains any of `position`, `size`, `font`, `crop`, `visibility`, `copy`, `variant`. These constrain automatic generation; manual editing remains explicit user control. The editor exposes them under Automatic generation locks. Keep blueprint boxes disables automatic geometry/variant replacement for existing targets.
+
+A `cutout` layer must reference a preceding image layer through `linkedLayerId`. It draws a saved alpha derivative at the original subject bounds and follows the photo's crop/transform/visibility. It is an aligned overlay, not independent subject translation onto an unrepaired background.
+
+Generated results are frozen campaign/target/policy/scene records outside master revisions. Accepting them creates local overrides and history. Their technical and draft review status are separate; generation does not publish or approve masters. See [implementation status and contract boundaries](IMPLEMENTATION-BLUEPRINT-STATUS.md).
+
+Image layers may set `imageFit: "contain"` to fit the full source crop on the banner background; omitted or `"cover"` preserves legacy cover behavior. Preview, overlays and exported pixels use the same source transform. Generation treats this as a crop property for locks.

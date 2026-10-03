@@ -1,3 +1,4 @@
+import { heroFor, effectiveBox } from './hero-variants.js';
 import { fitText, textTop, buttonTextBox } from './text-fit.js';
 import { layerAt, sceneAt } from './timeline.js';
 import { assessSubject } from './subject-position.js';
@@ -30,6 +31,7 @@ function drawText(ctx, text, layer, campaign, resources) {
   const { lines, size } = fitText(ctx, text, layer, resources);
   ctx.font = canvasFont(layer, size, resources);
   ctx.textBaseline = 'top';
+  ctx.direction = layer.direction || 'ltr';
   const top = textTop(layer, lines.length, size);
   lines.forEach((line, index) => {
     let x =
@@ -59,6 +61,28 @@ export function cropFor(image, layer, crop) {
   const cw = layer.width / scale,
     ch = layer.height / scale;
   return [sx + (sw - cw) * layer.focalX, sy + (sh - ch) * layer.focalY, cw, ch];
+}
+
+/** Source clipping is explicit so contain never reveals pixels outside a reference crop. */
+function drawPhoto(ctx, image, layer, sourceCrop, width = layer.width, height = layer.height) {
+  const [cx, cy, cw, ch] = cropFor(image, layer, sourceCrop);
+  const [ox, oy, ow, oh] = sourceCrop || [0, 0, image.width, image.height];
+  const x = Math.max(cx, ox),
+    y = Math.max(cy, oy);
+  const w = Math.max(0, Math.min(cx + cw, ox + ow) - x);
+  const h = Math.max(0, Math.min(cy + ch, oy + oh) - y);
+  if (w && h)
+    ctx.drawImage(
+      image,
+      x,
+      y,
+      w,
+      h,
+      ((x - cx) * width) / cw,
+      ((y - cy) * height) / ch,
+      (w * width) / cw,
+      (h * height) / ch,
+    );
 }
 
 function drawTextEffect(ctx, text, layer, campaign, resources) {
@@ -103,7 +127,7 @@ export function drawLayer(ctx, layer, campaign, resources, bp) {
   const { width: w, height: h } = layer;
   if (layer.type === 'image') {
     if (resources.hero) {
-      const crop = cropFor(resources.hero, layer, resources.heroCrop);
+      const image = heroFor(layer, resources).image;
       const shadow = layer.shadow;
       if (shadow?.enabled) {
         ctx.shadowColor = `${shadow.color}${Math.round(shadow.opacity * 255)
@@ -113,10 +137,28 @@ export function drawLayer(ctx, layer, campaign, resources, bp) {
         ctx.shadowOffsetX = shadow.offsetX;
         ctx.shadowOffsetY = shadow.offsetY;
       }
-      ctx.drawImage(resources.hero, ...crop, 0, 0, w, h);
+      drawPhoto(ctx, image, layer, resources.heroCrop);
       ctx.shadowColor = 'transparent';
       ctx.shadowBlur = ctx.shadowOffsetX = ctx.shadowOffsetY = 0;
       if (campaign.imageFadeEnabled !== false) drawImageFade(ctx, layer, bp.background);
+    }
+  } else if (layer.type === 'cutout') {
+    // Linked overlays never translate a subject independently of its original photo.
+    const photo = bp.layers.find((l) => l.id === layer.linkedLayerId);
+    if (photo && resources.cutout && resources.hero) {
+      const { image, frame } = heroFor(photo, resources);
+      const surface = canvasOf(image.width, image.height);
+      const cutoutBox = effectiveBox(resources.cutout.box, frame);
+      surface
+        .getContext('2d')
+        .drawImage(
+          resources.cutout.image,
+          cutoutBox.x * image.width,
+          cutoutBox.y * image.height,
+          cutoutBox.width * image.width,
+          cutoutBox.height * image.height,
+        );
+      drawPhoto(ctx, surface, photo, resources.heroCrop, w, h);
     }
   } else if (layer.type === 'logo') {
     if (resources.logo) {
@@ -165,7 +207,26 @@ export function drawLayer(ctx, layer, campaign, resources, bp) {
 function drawScene(ctx, bp, campaign, resources, scene, local, draw) {
   ctx.fillStyle = bp.background;
   ctx.fillRect(0, 0, bp.width, bp.height);
-  for (const layer of bp.layers) draw(ctx, layerAt(layer, scene, local), campaign, resources, bp);
+  for (const layer of bp.layers) {
+    let placed = layerAt(layer, scene, local);
+    if (layer.type === 'cutout') {
+      const photo = bp.layers.find((l) => l.id === layer.linkedLayerId);
+      if (photo) {
+        const source = layerAt(photo, scene, local);
+        placed = {
+          ...placed,
+          x: source.x,
+          y: source.y,
+          width: source.width,
+          height: source.height,
+          rotation: source.rotation,
+          visible: source.visible && placed.visible,
+          opacity: source.opacity * placed.opacity,
+        };
+      }
+    }
+    draw(ctx, placed, campaign, resources, bp);
+  }
 }
 export function renderFrame(canvas, bp, campaign, resources, timeMs = 0, draw = drawLayer) {
   resources = resourcesForBlueprint(bp, resources);

@@ -155,7 +155,11 @@ test('no match and model errors allow manual focus; stale searches cannot change
   const focus = p.campaigns.FI.subjectFocus;
   await page.getByRole('button', { name: 'Find subject', exact: true }).click();
   await page.getByRole('button', { name: 'United Kingdom', exact: true }).click();
+  await expect(page).toHaveURL(/market=UK/);
+  // URL updates precede the new market's panel commit during router transitions.
+  await expect(page.locator('.subject-preview')).toHaveCount(0);
   await page.getByLabel('Subject finder', { exact: true }).selectOption('browser');
+  await expect.poll(async () => (await project(page)).campaigns.UK.subjectEngine).toBe('browser');
   await page.locator('.upload-zone input').setInputFiles('public/references/160X600.png');
   await expect(page.locator('.subject-panel [role="status"]')).toContainText('No confident match');
   await saved(page);

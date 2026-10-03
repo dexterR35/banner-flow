@@ -85,3 +85,24 @@ export function normalizeDetections(raw) {
 }
 export const preferredSubject = (results) =>
   results.find((r) => /face/i.test(r.label)) || results[0] || null;
+
+/** A detected face may select its enclosing person; a manual box is authoritative. */
+export function cutoutTarget(focus, detections = []) {
+  if (!focus) return null;
+  if (focus.source === 'manual') return { box: focus.box, label: null };
+  const f = focus.box;
+  const parents = /face/i.test(focus.label)
+    ? detections
+        .filter(
+          (d) =>
+            /person|human body/i.test(d.label) &&
+            d.box.x <= f.x &&
+            d.box.y <= f.y &&
+            d.box.x + d.box.width >= f.x + f.width &&
+            d.box.y + d.box.height >= f.y + f.height,
+        )
+        .sort((a, b) => a.box.width * a.box.height - b.box.width * b.box.height)
+    : [];
+  const selected = parents[0] || focus;
+  return { box: selected.box, label: selected.label };
+}

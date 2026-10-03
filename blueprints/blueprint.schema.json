@@ -73,7 +73,8 @@
               "logo",
               "text",
               "button",
-              "shape"
+              "shape",
+              "cutout"
             ]
           },
           "source": {
@@ -88,6 +89,43 @@
               "legal",
               "custom"
             ]
+          },
+          "linkedLayerId": {
+            "type": "string"
+          },
+          "fitPolicy": {
+            "type": "string",
+            "const": "strict-v1"
+          },
+          "imageFit": {
+            "type": "string",
+            "enum": [
+              "cover",
+              "contain"
+            ]
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "ltr",
+              "rtl"
+            ]
+          },
+          "locks": {
+            "maxItems": 7,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "position",
+                "size",
+                "font",
+                "crop",
+                "visibility",
+                "copy",
+                "variant"
+              ]
+            }
           },
           "text": {
             "default": "",
@@ -352,6 +390,9 @@
           "shadow": {
             "type": "object",
             "properties": {
+              "auto": {
+                "type": "boolean"
+              },
               "enabled": {
                 "default": false,
                 "type": "boolean"

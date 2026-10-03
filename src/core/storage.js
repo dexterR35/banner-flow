@@ -1,3 +1,14 @@
+import { digest } from './generation/fingerprint.js';
+import { inspectImageHeader } from './generation/media-contract.js';
+import {
+  activeVariants,
+  heroUpscaleSchema,
+  heroExtendSchema,
+  heroCutoutSchema,
+} from './hero-variants.js';
+import { outputLimitSchema } from '../data/output-limits.js';
+import { strictPolicy } from './generation/contracts.js';
+import { validateFlow } from './generation/flow.js';
 import { get, set } from 'idb-keyval';
 import { validateBlueprint } from './schema.js';
 import { layoutKey } from './auto-layout.js';
@@ -8,7 +19,14 @@ const KEY = 'bannerflow-project-v1';
 export const loadProject = () => get(KEY);
 export const saveProject = (project) => set(KEY, project);
 export const getAsset = (id) => get(`asset:${id}`);
-export const putAsset = (id, blob) => set(`asset:${id}`, blob);
+export async function putAsset(id, blob) {
+  if ((await digest(await blob.arrayBuffer())) !== id)
+    throw new Error('Asset hash does not match its original bytes.');
+  const existing = await getAsset(id);
+  if (existing && (await digest(await existing.arrayBuffer())) === id) return;
+  // A verified backup can repair corrupt local bytes without changing source identity.
+  await set(`asset:${id}`, blob);
+}
 export async function storeAsset(file, kind) {
   if (file.size > 30 * 1024 * 1024) throw new Error('Use a file smaller than 30 MB.');
   if (kind === 'font' && !/\.(woff2?|ttf|otf)$/i.test(file.name))
@@ -22,8 +40,9 @@ export async function storeAsset(file, kind) {
     hash = await crypto.subtle.digest('SHA-256', bytes);
   const id = Array.from(new Uint8Array(hash), (b) => b.toString(16).padStart(2, '0')).join('');
   // Decode before persistence so broken assets never become campaign bindings.
-  let width, height;
+  let width, height, sourceMedia;
   if (kind !== 'font') {
+    sourceMedia = inspectImageHeader(bytes, file.type);
     const url = URL.createObjectURL(file);
     try {
       const im = await imageFrom(url);
@@ -46,8 +65,19 @@ export async function storeAsset(file, kind) {
     bytes: file.size,
     width,
     height,
+    sourceMedia,
+    coordinateSpace: 'normalized-oriented-source',
+    provenance: kind === 'derived' ? 'generated-derivative' : 'campaign-original',
     createdAt: new Date().toISOString(),
   };
+}
+export async function storeDerivedAsset(blob, metadata) {
+  if (!/^[a-f0-9]{64}$/.test(metadata.derivedFrom) || !(await getAsset(metadata.derivedFrom)))
+    throw new Error('Derived image source is missing.');
+  if (!['cutout', 'extend', 'upscale', 'frame'].includes(metadata.operation))
+    throw new Error('Unsupported derivative recipe.');
+  const asset = await storeAsset(new File([blob], metadata.name, { type: blob.type }), 'derived');
+  return { ...asset, ...metadata };
 }
 export function imageFrom(url) {
   return new Promise((resolve, reject) => {
@@ -109,7 +139,8 @@ async function assetImage(id) {
 export async function loadResources(campaign) {
   const presets = campaign.referencePack === 'joker5' ? await loadReferencePresets() : null;
   const demo = presets ? Object.values(presets)[0] : null;
-  const hero = campaign.heroAssetId
+  const variants = activeVariants(campaign);
+  const heroSource = campaign.heroAssetId
     ? await assetImage(campaign.heroAssetId)
     : demo?.hero ||
       (await (images.get('demo') ||
@@ -118,6 +149,16 @@ export async function loadResources(campaign) {
           images.set('demo', promise);
           return promise;
         })()));
+  const hero = variants.upscale ? await assetImage(variants.upscale.assetId) : heroSource;
+  const heroWide = variants.wide
+    ? { image: await assetImage(variants.wide.assetId), frame: variants.wide.frame }
+    : null;
+  const heroTall = variants.tall
+    ? { image: await assetImage(variants.tall.assetId), frame: variants.tall.frame }
+    : null;
+  const cutout = variants.cutout
+    ? { image: await assetImage(variants.cutout.assetId), box: variants.cutout.box }
+    : null;
   const logo = campaign.logoAssetId ? await assetImage(campaign.logoAssetId) : demo?.logo || null;
   let fontFamily = null;
   if (campaign.typography === 'outfit') {
@@ -135,6 +176,10 @@ export async function loadResources(campaign) {
   }
   return {
     hero,
+    heroSource,
+    heroWide,
+    heroTall,
+    cutout,
     heroCrop: campaign.heroAssetId ? null : demo?.heroCrop || [0, 340, 300, 210],
     ...(presets
       ? { presets, uploadedHero: !!campaign.heroAssetId, uploadedLogo: !!campaign.logoAssetId }
@@ -188,7 +233,10 @@ export function validateProject(value) {
   for (const asset of value.assets)
     if (
       !/^[a-f0-9]{64}$/.test(asset.id) ||
-      !['hero', 'logo', 'font'].includes(asset.kind) ||
+      !['hero', 'logo', 'font', 'derived', 'media'].includes(asset.kind) ||
+      (asset.kind === 'derived' &&
+        (!value.assets.some((a) => a.id === asset.derivedFrom) ||
+          !['cutout', 'extend', 'upscale', 'frame'].includes(asset.operation))) ||
       typeof asset.name !== 'string' ||
       typeof asset.type !== 'string'
     )
@@ -276,6 +324,25 @@ export function validateProject(value) {
       throw new Error('Invalid campaign typography.');
     if (c.referencePack != null && c.referencePack !== 'joker5')
       throw new Error('Unknown reference resource pack.');
+    for (const [key, schema] of Object.entries({
+      heroUpscale: heroUpscaleSchema,
+      heroExtendWide: heroExtendSchema,
+      heroExtendTall: heroExtendSchema,
+      heroCutout: heroCutoutSchema,
+    })) {
+      if (!c[key]) continue;
+      c[key] = schema.parse(c[key]);
+      if (
+        ![c[key].assetId, c[key].sourceAssetId].every((id) => value.assets.some((a) => a.id === id))
+      )
+        throw new Error('Missing generated image binding.');
+    }
+    for (const key of ['subjectInFront', 'autoReadability', 'autoImageTools'])
+      if (c[key] != null && typeof c[key] !== 'boolean')
+        throw new Error('Invalid automatic image setting.');
+    if (c.ctaColor != null && !/^#[a-f0-9]{6}$/i.test(c.ctaColor))
+      throw new Error('Invalid CTA color.');
+    if (c.outputLimit) c.outputLimit = outputLimitSchema.parse(c.outputLimit);
     c.autoArrange ??= true;
     if (c.keepBlueprintBoxes != null && typeof c.keepBlueprintBoxes !== 'boolean')
       throw new Error('Invalid blueprint box setting.');
@@ -292,6 +359,94 @@ export function validateProject(value) {
     if (c.subjectFocus) c.subjectFocus = subjectFocusSchema.parse(c.subjectFocus);
     if ([c.subjectSearch, c.subjectFocus].some((item) => item && item.assetId !== c.heroAssetId))
       throw new Error('Subject focus does not match the campaign image.');
+  }
+  if (value.generationFlows != null) {
+    if (
+      typeof value.generationFlows !== 'object' ||
+      Array.isArray(value.generationFlows) ||
+      Object.keys(value.generationFlows).length > 100
+    )
+      throw new Error('Invalid saved generation flows.');
+    for (const [marketId, flow] of Object.entries(value.generationFlows)) {
+      if (!value.markets.some((market) => market.id === marketId))
+        throw new Error('Invalid generation flow market.');
+      value.generationFlows[marketId] = validateFlow(flow);
+    }
+  }
+  if (value.generationBatches != null) {
+    if (!Array.isArray(value.generationBatches) || value.generationBatches.length > 20)
+      throw new Error('Invalid generation history.');
+    for (const batch of value.generationBatches) {
+      if (
+        !/^[a-f0-9]{64}$/.test(batch.id) ||
+        !value.markets.some((m) => m.id === batch.snapshot?.market?.id) ||
+        !Array.isArray(batch.items) ||
+        batch.items.length > 100
+      )
+        throw new Error('Invalid generation batch.');
+      batch.snapshot.policy = strictPolicy(batch.snapshot.policy);
+      if (
+        !Array.isArray(batch.snapshot.targets) ||
+        batch.snapshot.targets.length !== batch.items.length
+      )
+        throw new Error('Incomplete target matrix.');
+      if (batch.workflow != null) {
+        batch.workflow = validateFlow(batch.workflow);
+        if (
+          !Array.isArray(batch.outputNodeIds) ||
+          batch.outputNodeIds.length !== batch.items.length ||
+          batch.outputNodeIds.some(
+            (id) => !batch.workflow.nodes.some((node) => node.id === id && node.kind === 'output'),
+          )
+        )
+          throw new Error('Invalid generation graph snapshot.');
+      }
+      for (const kind of ['hero', 'logo', 'font'])
+        if (
+          batch.snapshot.campaign[`${kind}AssetId`] &&
+          !value.assets.some((a) => a.id === batch.snapshot.campaign[`${kind}AssetId`])
+        )
+          throw new Error('Missing frozen campaign asset.');
+      batch.snapshot.bases = batch.snapshot.bases.map((bp) => (bp ? validateBlueprint(bp) : null));
+      for (const item of batch.items) {
+        if (!['succeeded', 'blocked', 'failed', 'cancelled'].includes(item.state))
+          throw new Error('Invalid target status.');
+        if (item.state === 'succeeded' && !item.scene)
+          throw new Error('Missing successful layout.');
+        if (item.scene) {
+          item.scene = validateBlueprint(item.scene);
+          if (
+            item.scene.width !== item.target.width ||
+            item.scene.height !== item.target.height ||
+            item.scene.marketId !== batch.snapshot.market.id
+          )
+            throw new Error('Generated target identity mismatch.');
+        }
+      }
+    }
+  }
+  if (
+    value.generationRuns != null &&
+    (!Array.isArray(value.generationRuns) ||
+      value.generationRuns.length > 20 ||
+      value.generationRuns.some(
+        (r) =>
+          !value.markets.some((m) => m.id === r.ownerMarketId) ||
+          !Array.isArray(r.batchIds) ||
+          r.batchIds.length > 100 ||
+          r.batchIds.some((id) => !/^[a-f0-9]{64}$/.test(id)),
+      ))
+  )
+    throw new Error('Invalid market generation matrix.');
+  if (value.generationUndo) {
+    if (!Array.isArray(value.generationUndo.accepted) || value.generationUndo.accepted.length > 100)
+      throw new Error('Invalid generation undo.');
+    for (const item of value.generationUndo.accepted)
+      for (const banner of [item.before, item.after].filter(Boolean)) {
+        if (banner.override) validateBlueprint(banner.override);
+        if (banner.arrangement) validateBlueprint(banner.arrangement);
+        for (const revision of banner.history || []) validateBlueprint(revision.blueprint);
+      }
   }
   // Older workspaces retain their saved appearance until the next content edit or manual arrange.
   if (value.consolidatedReferences != null) {

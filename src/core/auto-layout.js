@@ -15,6 +15,23 @@ export const layoutKey = (campaign) =>
     campaign.heroAssetId,
     campaign.logoAssetId,
     campaign.fontAssetId,
+    ...(campaign.heroUpscale ||
+    campaign.heroCutout ||
+    campaign.heroExtendWide ||
+    campaign.heroExtendTall ||
+    campaign.ctaColor ||
+    campaign.subjectInFront ||
+    campaign.autoReadability
+      ? [
+          campaign.heroUpscale,
+          campaign.heroCutout,
+          campaign.heroExtendWide,
+          campaign.heroExtendTall,
+          campaign.ctaColor,
+          campaign.subjectInFront,
+          campaign.autoReadability,
+        ]
+      : []),
     ...(campaign.referencePack ? [campaign.referencePack] : []),
     ...(campaign.typography === 'outfit' ? ['outfit-800-600-400'] : []),
     ...(campaign.subjectFocus ? [campaign.subjectFocus] : []),
@@ -148,6 +165,7 @@ export function arrangeBanner(
     resizeImage = true,
   } = {},
 ) {
+  if (bp.layers.some((l) => l.fitPolicy === 'strict-v1')) return bp;
   bp = reserveLegalFooter(bp);
   resources = resourcesForBlueprint(bp, resources);
   // Text fitting happens inside each saved box in the shared renderer. Subject focus

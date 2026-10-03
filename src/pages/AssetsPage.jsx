@@ -1,3 +1,4 @@
+import AssetLibrary from '../components/assets/AssetLibrary.jsx';
 import { Button, EmptyState, InfoCard, Title } from '../components/ui/index.js';
 import ReferenceCard from '../components/assets/ReferenceCard.jsx';
 import { BookOpen, Images, ArrowRight, Image as ImageIcon } from 'lucide-react';
@@ -14,6 +15,7 @@ export default function AssetsPage() {
         title="Assets & references"
         description="Original files and reference evidence, kept together."
       />
+      <AssetLibrary />
       <InfoCard icon={BookOpen} title="NetBet FI and Joker5 references">
         <p>
           Joker5 includes Chest and Mask variants. Sizes use the actual image pixels, even when the
@@ -29,36 +31,6 @@ export default function AssetsPage() {
           <ReferenceCard key={asset.file} asset={asset} />
         ))}
       </div>
-      <Title as="h2" className="section-heading">
-        Uploaded originals <span>{project.assets.length} assets</span>
-      </Title>
-      {project.assets.length ? (
-        <div className="asset-list">
-          {project.assets.map((a) => (
-            <div key={a.id}>
-              <ImageIcon size={18} />
-              <strong>{a.name}</strong>
-              <span>{a.kind}</span>
-              <small>
-                {a.width ? `${a.width} × ${a.height} · ` : ''}
-                {(a.bytes / 1024).toFixed(0)} KB
-              </small>
-              <code>{a.id.slice(0, 12)}</code>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <EmptyState
-          icon={Images}
-          action={
-            <Button variant="secondary" onClick={() => setView('campaign')}>
-              Open campaign <ArrowRight size={14} />
-            </Button>
-          }
-        >
-          Upload campaign imagery, logos and fonts from the campaign panel.
-        </EmptyState>
-      )}
     </Page>
   );
 }

@@ -48,7 +48,22 @@ function visibleFrame(layer) {
 function assess(rect, layer, obstacles) {
   const size = area(rect);
   const clipped = 1 - intersection(rect, layer) / size;
-  const covered = Math.min(1, obstacles.reduce((sum, r) => sum + intersection(rect, r), 0) / size);
+  const visible = {
+    x: Math.max(rect.x, layer.x),
+    y: Math.max(rect.y, layer.y),
+    width: Math.max(
+      0,
+      Math.min(rect.x + rect.width, layer.x + layer.width) - Math.max(rect.x, layer.x),
+    ),
+    height: Math.max(
+      0,
+      Math.min(rect.y + rect.height, layer.y + layer.height) - Math.max(rect.y, layer.y),
+    ),
+  };
+  const covered = Math.min(
+    1,
+    obstacles.reduce((sum, r) => sum + intersection(visible, r), 0) / size,
+  );
   const faded = Math.max(
     0,
     (intersection(rect, layer) - intersection(rect, visibleFrame(layer))) / size,

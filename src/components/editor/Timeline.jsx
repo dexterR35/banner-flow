@@ -1,10 +1,20 @@
+import { autoAnimate } from '../../core/auto-animation.js';
 import { Button, Input, NumberField } from '../ui/index.js';
 import { Play, Pause, Plus, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 
 import { sceneAt, sceneStart, totalDuration } from '../../core/timeline.js';
 import { uid } from '../../data/defaults.js';
 
-export default function Timeline({ bp, setBp, time, setTime, playing, setPlaying, selected }) {
+export default function Timeline({
+  bp,
+  setBp,
+  time,
+  setTime,
+  playing,
+  setPlaying,
+  selected,
+  campaign,
+}) {
   const { scene, index } = sceneAt(bp, time),
     total = totalDuration(bp),
     track = scene.tracks[selected] || {};
@@ -65,6 +75,16 @@ export default function Timeline({ bp, setBp, time, setTime, playing, setPlaying
           </span>
         </div>
         <div className="row">
+          <Button
+            variant="subtle"
+            onClick={() => {
+              setBp(autoAnimate(bp, campaign));
+              setTime(0);
+              setPlaying(false);
+            }}
+          >
+            Auto parts
+          </Button>
           <span className="micro">{bp.scenes.length} PARTS</span>
           <Button variant="subtle" disabled={bp.scenes.length >= 12} onClick={add}>
             <Plus size={14} /> Add part

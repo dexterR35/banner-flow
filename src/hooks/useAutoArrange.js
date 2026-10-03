@@ -1,3 +1,5 @@
+import { placeSubjectInFront } from '../core/subject-layer.js';
+import { assessReadability, improveReadability, clearAutomaticHalos } from '../core/readability.js';
 import { useEffect } from 'react';
 import { arrangeBanner, layoutKey } from '../core/auto-layout.js';
 import { resolveBanner } from '../data/defaults.js';
@@ -11,10 +13,23 @@ export function arrangeMarket(project, marketId, resources, onlyPending = false)
     if (onlyPending && banner.layoutKey === key) continue;
     // Always start from the saved design, so repeated reflows cannot drift or shrink the photo.
     const base = resolveBanner(entry, { ...banner, arrangement: null });
+    let arranged = arrangeBanner(base, campaign, resources, { preserveFlow: !!banner.override });
+    if (!arranged.layers.some((l) => l.fitPolicy === 'strict-v1')) {
+      arranged = placeSubjectInFront(clearAutomaticHalos(arranged), campaign, resources);
+      if (campaign.ctaColor)
+        arranged = {
+          ...arranged,
+          layers: arranged.layers.map((l) =>
+            l.type === 'button' ? { ...l, fill: campaign.ctaColor } : l,
+          ),
+        };
+      if (campaign.autoReadability)
+        arranged = improveReadability(arranged, assessReadability(arranged, campaign, resources));
+    }
     banners[entry.id] = {
       ...banner,
       layoutKey: key,
-      arrangement: arrangeBanner(base, campaign, resources, { preserveFlow: !!banner.override }),
+      arrangement: arranged,
     };
   }
   return { ...project, banners };

@@ -41,6 +41,25 @@ export default function LayerInspector({
       </div>
       {selectedLayer ? (
         <>
+          {!blueprintMode && (
+            <details className="generation-locks">
+              <summary>Automatic generation locks</summary>
+              {['position', 'size', 'font', 'crop', 'visibility', 'copy', 'variant'].map((lock) => (
+                <Checkbox
+                  key={lock}
+                  label={`Lock ${lock}`}
+                  checked={selectedLayer.locks?.includes(lock) || false}
+                  onChange={(e) =>
+                    change({
+                      locks: e.target.checked
+                        ? [...(selectedLayer.locks || []), lock]
+                        : (selectedLayer.locks || []).filter((v) => v !== lock),
+                    })
+                  }
+                />
+              ))}
+            </details>
+          )}
           {selectedLayer.type === 'image' && (
             <div className="image-position-controls">
               {!blueprintMode && (

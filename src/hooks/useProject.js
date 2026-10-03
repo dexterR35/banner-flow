@@ -58,6 +58,10 @@ export function useResources(campaign) {
     campaign.fontAssetId,
     campaign.typography,
     campaign.referencePack,
+    campaign.heroUpscale,
+    campaign.heroExtendWide,
+    campaign.heroExtendTall,
+    campaign.heroCutout,
   ]);
   const [state, setState] = useState({ resources: null, error: null, key });
   useEffect(() => {

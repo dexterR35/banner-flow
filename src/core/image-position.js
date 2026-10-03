@@ -7,15 +7,16 @@ export function imagePlacement(image, layer, crop) {
     image.naturalWidth || image.width,
     image.naturalHeight || image.height,
   ];
-  const scale = Math.max(layer.width / sw, layer.height / sh) * layer.zoom;
+  const contain = layer.imageFit === 'contain';
+  const scale = (contain ? Math.min : Math.max)(layer.width / sw, layer.height / sh) * layer.zoom;
   return {
     sx,
     sy,
     sw,
     sh,
     scale,
-    travelX: Math.max(0, sw * scale - layer.width),
-    travelY: Math.max(0, sh * scale - layer.height),
+    travelX: contain ? sw * scale - layer.width : Math.max(0, sw * scale - layer.width),
+    travelY: contain ? sh * scale - layer.height : Math.max(0, sh * scale - layer.height),
   };
 }
 
